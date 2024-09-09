@@ -4,39 +4,90 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;
-    public float jumpForce = 10f;
+    [SerializeField] private float speed;
+    [SerializeField] private float jumpPower;
+    [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask wallLayer;
+    private Rigidbody2D body;
+    //private Animator anim;
+    private BoxCollider2D boxCollider;
+    private float wallJumpCooldown;
+    private float horizontalInput;
     public int maxHealth = 2;
     private int currentHealth;
-    private Rigidbody2D rb;
-    private bool isGrounded = false;
     private bool hasAbilities = false;
 
-    void Start()
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        //Grab references for rigidbody and animator from object
+        body = GetComponent<Rigidbody2D>();
+        //anim = GetComponent<Animator>();
+        boxCollider = GetComponent<BoxCollider2D>();
         currentHealth = maxHealth;
     }
 
-    void Update()
+    private void Update()
     {
-        Move();
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            Jump();
-        }
-    }
+        horizontalInput = Input.GetAxis("Horizontal");
 
+        // Flip player when moving left-right, while preserving Y and Z scales
+        Vector3 scale = transform.localScale;
+
+        if (horizontalInput > 0.01f)
+            scale.x = Mathf.Abs(scale.x);  // Face right
+        else if (horizontalInput < -0.01f)
+            scale.x = -Mathf.Abs(scale.x);  // Face left
+
+        transform.localScale = scale;
+
+        // Set animation parameters (adjust as needed for your Animator)
+        //anim.SetBool("run", horizontalInput != 0);
+        //anim.SetBool("grounded", isGrounded());
+
+        // Wall jump logic
+        if (wallJumpCooldown > 0.2f)
+        {
+            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+
+            if (onWall() && !isGrounded())
+            {
+                body.gravityScale = 0;
+                body.velocity = Vector2.zero;
+            }
+            else
+                body.gravityScale = 5;
+
+            if (Input.GetKey(KeyCode.Space))
+                Jump();
+        }
+        else
+            wallJumpCooldown += Time.deltaTime;
+    }
     void Move()
     {
         float moveX = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveX * moveSpeed, rb.velocity.y);
+        body.velocity = new Vector2(moveX * speed, body.velocity.y);
     }
 
-    void Jump()
+    private void Jump()
     {
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-        isGrounded = false;
+        if (isGrounded())
+        {
+            body.velocity = new Vector2(body.velocity.x, jumpPower);
+            //anim.SetTrigger("jump");
+        }
+        else if (onWall() && !isGrounded())
+        {
+            if (horizontalInput == 0)
+            {
+                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
+                transform.localScale = new Vector3(-Mathf.Sign(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+            }
+            else
+                body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
+
+            wallJumpCooldown = 0;
+        }
     }
 
     public void TakeDamage(int damage)
@@ -52,19 +103,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+
+
+    private bool isGrounded()
     {
-        if (collision.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-        }
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.down, 0.1f, groundLayer);
+        return raycastHit.collider != null;
+    }
+    private bool onWall()
+    {
+        RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
+        return raycastHit.collider != null;
+    }
+    public bool canAttack()
+    {
+        return horizontalInput == 0 && isGrounded() && !onWall();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+        private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Enemy"))
         {
-            if (!hasAbilities && rb.velocity.y < 0)
+            if (!hasAbilities && body.velocity.y < 0)
             {
                 EnemyController enemy = collision.GetComponent<EnemyController>();
                 enemy.TakeDamage(1);
@@ -76,18 +136,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+
     void GainAbilitiesFromEnemy(EnemyController enemy)
     {
-        moveSpeed = enemy.moveSpeed;
-    
+        speed = enemy.moveSpeed;
+   
         enemy.UseAbility();
 
-        
+
+       
         hasAbilities = true;
 
+
         // Bounce the player up after stomp
-        rb.velocity = new Vector2(rb.velocity.x, jumpForce * 0.5f);
+        body.velocity = new Vector2(body.velocity.x, jumpPower * 0.5f);
     }
+
 
     void Die()
     {
@@ -96,6 +160,8 @@ public class PlayerController : MonoBehaviour
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
     }
+
+
 }
 
 

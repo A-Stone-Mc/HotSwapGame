@@ -527,7 +527,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!212 &1033381858
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -608,8 +608,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92a9bc9ae08e4fe4aa7c2331aff121ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 8
-  jumpForce: 10
+  speed: 6
+  jumpPower: 20
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 128
   maxHealth: 2
 --- !u!1 &1086312245
 GameObject:
@@ -1010,7 +1016,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 7
 --- !u!114 &1750695310
 MonoBehaviour:
   m_ObjectHideFlags: 0
