@@ -160,6 +160,7 @@ public class PlayerController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHealth -= damage;
+        body.velocity = new Vector2(body.velocity.x, jumpPower * 0.3f);
         if (currentHealth <= 0)
         {
             Die();
@@ -251,7 +252,7 @@ public class PlayerController : MonoBehaviour
         
         yield return new WaitForSeconds(0.5f);  
 
-        // Re-enable collision with platforms
+        // enable collision with platforms
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Platform"), false);
     }
 
