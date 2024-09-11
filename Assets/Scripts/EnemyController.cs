@@ -22,6 +22,18 @@ public abstract class EnemyController : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision) //deal damage
+    {
+        if (collision.CompareTag("Player"))
+        {
+            PlayerController player = collision.GetComponent<PlayerController>();
+            if (player != null)
+            {
+                player.TakeDamage(1); // Damage the player
+            }
+        }
+    }
+
     protected abstract void Die();  
 
     public abstract void UseAbility(); 

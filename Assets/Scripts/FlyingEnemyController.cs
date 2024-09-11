@@ -6,15 +6,15 @@ using UnityEngine;
 
 public class FlyingEnemyController : EnemyController
 {
-    public Transform pointA; // The left point for horizontal movement
-    public Transform pointB; // The right point for horizontal movement
-    public float bobbingAmplitude = 0.5f; // The height of the bobbing motion
-    public float bobbingFrequency = 1f;   // The speed of the bobbing motion
+    public Transform pointA; // The left point 
+    public Transform pointB; // The right point 
+    public float bobbingAmplitude = 0.5f; // The height of the bobbing 
+    public float bobbingFrequency = 1f;   // The speed of the bobbing
 
     public GameObject bombPrefab;
-    public Transform dropPoint1;  // First drop point
-    public Transform dropPoint2;  // Second drop point
-    public float dropInterval = 3f; // Time between bomb drops
+    public Transform dropPoint1;  
+    public Transform dropPoint2;  
+    public float dropInterval = 3f; // Time between drops
     private float dropTimer;
 
     private Vector3 targetPosition;
@@ -31,7 +31,7 @@ public class FlyingEnemyController : EnemyController
         DropBombs();
     }
 
-    // Override the base class Move method
+    // Override the base 
     public override void Move()
     {
         // Move between pointA and pointB
@@ -55,11 +55,11 @@ public class FlyingEnemyController : EnemyController
         dropTimer -= Time.deltaTime;
         if (dropTimer <= 0)
         {
-            // Drop bomb from both drop points simultaneously
+            
             Instantiate(bombPrefab, dropPoint1.position, Quaternion.identity);
             Instantiate(bombPrefab, dropPoint2.position, Quaternion.identity);
 
-            dropTimer = dropInterval; // Reset the drop timer
+            dropTimer = dropInterval; 
         }
     }
 
