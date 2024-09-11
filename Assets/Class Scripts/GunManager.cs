@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.Events;
 
 [CustomEditor(typeof(GunManager))]
 public class GunManagerEditor : Editor
@@ -30,6 +31,8 @@ public class GunManagerEditor : Editor
 
 public class GunManager : MonoBehaviour
 {
+
+    public UnityEvent swapped;
     public List<Weapon> weapons;
     public Weapon weapon;
     private int weaponIndex = 0;
@@ -37,7 +40,11 @@ public class GunManager : MonoBehaviour
     public void Use()
     {
         if (weapon)
+        {
             weapon.Use();
+            weapon.equiped.Invoke();
+            swapped.Invoke();
+        }
     }
 
     public void PrevGun()
@@ -63,5 +70,8 @@ public class GunManager : MonoBehaviour
             weaponIndex = 0;
 
         weapon = weapons[weaponIndex];
+
+        weapon.equiped.Invoke();
+        swapped.Invoke();
     }
 }

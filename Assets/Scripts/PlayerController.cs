@@ -26,6 +26,10 @@ public class PlayerController : MonoBehaviour
     public float dropInterval = 1f; // Time between player drops
     private float dropTimer;
 
+
+    [Tooltip("Scale of Flying Enemy Type")]
+    public Vector3 newFlyingScale; //scale of flying enemy sprite
+
     public LayerMask platformLayer;  // Reference to the platform layer
 
     public Sprite flyingTypeSprite; 
@@ -224,6 +228,7 @@ public class PlayerController : MonoBehaviour
         if (enemy is FlyingEnemyController)
         {
             spriteRenderer.sprite = flyingTypeSprite;  // Change to flying enemy sprite
+            transform.localScale = newFlyingScale;
         }
        
         hasAbilities = true;
