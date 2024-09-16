@@ -5,7 +5,12 @@ using UnityEngine;
 public class LightningBolt : MonoBehaviour
 {
     public int damage = 1;
-
+     private Collider2D lightningCollider;
+    void Start()
+    {
+       
+        lightningCollider = GetComponent<Collider2D>();
+    }
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
@@ -22,6 +27,11 @@ public class LightningBolt : MonoBehaviour
         if (collision.CompareTag("Ground"))
         {
             Destroy(gameObject); 
+        }
+
+        if (collision.CompareTag("Enemy"))
+        {
+           lightningCollider.enabled = false;
         }
     }
 }

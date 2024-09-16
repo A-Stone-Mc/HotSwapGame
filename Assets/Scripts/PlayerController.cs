@@ -229,6 +229,11 @@ public class PlayerController : MonoBehaviour
         {
             spriteRenderer.sprite = flyingTypeSprite;  // Change to flying enemy sprite
             transform.localScale = newFlyingScale;
+            Vector2 newSize = new Vector2(13.299f, 13.78256f); // New width and height of flying collider
+            boxCollider.size = newSize;
+
+        
+            boxCollider.offset = new Vector2(-0.5520077f, -1.562553f);
         }
        
         hasAbilities = true;
