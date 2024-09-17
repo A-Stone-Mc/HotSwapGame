@@ -1,0 +1,123 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class LaserEnemyController : EnemyController
+{
+    public Transform pointA; // Patrol point A
+    public Transform pointB; // Patrol point B
+    public GameObject laserBeamPrefab; // The laser beam prefab
+    public Transform laserFirePoint; // The point from which the laser is fired
+    public float laserRange = 10f; // How far the laser can reach
+    public float laserCooldown = 3f; // Time between laser shots
+    public float detectionRange = 8f; // How close the player must be 
+    private float laserCooldownTimer;
+    private Vector3 targetPosition;
+    private bool playerInRange = false;
+
+    private void Start()
+    {
+        targetPosition = pointB.position; 
+        laserCooldownTimer = laserCooldown;
+    }
+
+    private void Update()
+    {
+        Patrol();
+        CheckPlayerInRange();
+        if (playerInRange && laserCooldownTimer <= 0)
+        {
+            FireLaser();
+            laserCooldownTimer = laserCooldown;
+        }
+        laserCooldownTimer -= Time.deltaTime;
+    }
+
+    // Patrol logic between two points
+    private void Patrol()
+    {
+        if (!playerInRange)
+        {
+            float step = moveSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
+
+            // Switch direction when reaching the patrol point
+            if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
+            {
+                targetPosition = targetPosition == pointA.position ? pointB.position : pointA.position;
+                Flip();
+            }
+        }
+    }
+
+    // Check if the player is within detection range
+    private void CheckPlayerInRange()
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            float distanceToPlayer = Vector2.Distance(transform.position, player.transform.position);
+            if (distanceToPlayer <= detectionRange)
+            {
+                playerInRange = true;
+                FacePlayer(player);
+            }
+            else
+            {
+                playerInRange = false;
+            }
+        }
+    }
+
+    // Face the direction of the player
+    private void FacePlayer(GameObject player)
+    {
+        Vector3 direction = player.transform.position - transform.position;
+        if (direction.x > 0)
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        else if (direction.x < 0)
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+    }
+
+    // Fire the laser beam in the direction the enemy is facing
+    private void FireLaser()
+    {
+        Debug.Log("Laser Fired!");
+
+        // Instantiate the laser beam
+        GameObject laserBeam = Instantiate(laserBeamPrefab, laserFirePoint.position, laserFirePoint.rotation);
+
+        // Determine the direction based on the enemy's facing direction
+        Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+
+        // Pass the direction to the laser beam
+        LaserBeam beamScript = laserBeam.GetComponent<LaserBeam>();
+        if (beamScript != null)
+        {
+            beamScript.SetDirection(direction);  // Set the direction to left or right
+        }
+
+        // Flip the laser if the enemy is facing left (this only flips the sprite, not the movement)
+        if (direction == Vector2.left)
+        {
+            laserBeam.transform.localScale = new Vector3(-laserBeam.transform.localScale.x, laserBeam.transform.localScale.y, laserBeam.transform.localScale.z);
+        }
+    }
+
+    // Flip direction
+    private void Flip()
+    {
+        transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+    }
+
+    public override void UseAbility()
+    {
+        Debug.Log("Laser Enemy's ability activated!");
+    }
+
+    protected override void Die()
+    {
+        Debug.Log("Laser Enemy Died!");
+        gameObject.SetActive(false);
+    }
+}

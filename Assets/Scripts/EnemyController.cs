@@ -4,6 +4,8 @@ using UnityEngine;
 
 public abstract class EnemyController : MonoBehaviour
 {
+    public CDTimer cdTimer;
+    public float newTimeRemaining = 10f;
     public int health = 2;
     public float moveSpeed = 2f;
 
@@ -19,6 +21,7 @@ public abstract class EnemyController : MonoBehaviour
         if (health <= 0)
         {
             Die();
+            cdTimer.timeRemaining = newTimeRemaining;
         }
     }
 

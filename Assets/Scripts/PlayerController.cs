@@ -206,6 +206,8 @@ public class PlayerController : MonoBehaviour
             {
                 EnemyController enemy = collision.GetComponent<EnemyController>();
                 enemy.TakeDamage(1);
+                // Bounce the player up after stomp
+                body.velocity = new Vector2(body.velocity.x, jumpPower * 0.5f);
                 if (enemy.health <= 0)
                 {
                     GainAbilitiesFromEnemy(enemy);
@@ -239,8 +241,7 @@ public class PlayerController : MonoBehaviour
         hasAbilities = true;
 
 
-        // Bounce the player up after stomp
-        body.velocity = new Vector2(body.velocity.x, jumpPower * 0.5f);
+
     }
 
     private IEnumerator FlashRed()
