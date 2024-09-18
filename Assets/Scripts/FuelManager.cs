@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 public class FuelManager : MonoBehaviour
 {
     public static FuelManager Instance; 
 
     public Image fuelBar; // UI will be here
     public float maxFuel = 100f; //amount needed to filll bar
-    private float currentFuel; 
+    public float currentFuel; 
 
     void Awake()
     {
@@ -17,7 +17,7 @@ public class FuelManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); //keeps the fuel manager in every scene
+            
         }
         else
         {
@@ -28,16 +28,29 @@ public class FuelManager : MonoBehaviour
 
     void Start()
     {
+        ResetFuel();
         currentFuel = 0f;
         UpdateFuelBar();
+        SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResetFuel();
+    }
 
-    void UpdateFuelBar()
+    public void UpdateFuelBar()
     {
         if (fuelBar != null)
         {
             fuelBar.fillAmount = currentFuel / maxFuel; 
+        }
+    }
+    void AssignFuelBar()
+    {
+        if (fuelBar == null)
+        {
+            fuelBar = GameObject.Find("Fill").GetComponent<Image>(); // Find the fuel bar in the scene by name
         }
     }
 
@@ -52,5 +65,18 @@ public class FuelManager : MonoBehaviour
     public bool FuelIsEnough()
     {
         return currentFuel >= maxFuel;
+    }
+
+    public void ResetFuel()
+    {
+        currentFuel = 0f; // Reset currentFuel to zero
+        UpdateFuelBar();  // Update the fuel bar UI
+    }
+
+
+    private void OnDestroy()
+    {
+        
+        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

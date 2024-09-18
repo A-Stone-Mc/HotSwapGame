@@ -9,6 +9,7 @@ public abstract class EnemyController : MonoBehaviour
     public int health = 2;
     public float moveSpeed = 2f;
 
+
     public virtual void Move()
     {
         
@@ -18,10 +19,10 @@ public abstract class EnemyController : MonoBehaviour
     public void TakeDamage(int damage)
     {
         health -= damage;
+        Debug.Log("Enemy took damage. Current health: " + health);
         if (health <= 0)
         {
             Die();
-            cdTimer.timeRemaining = newTimeRemaining;
         }
     }
 
@@ -34,10 +35,13 @@ public abstract class EnemyController : MonoBehaviour
             {
                 player.TakeDamage(1); // Damage the player
             }
+
+            
         }
     }
 
-    protected abstract void Die();  
+    public abstract void Die();
+  
 
     public abstract void UseAbility(); 
 }

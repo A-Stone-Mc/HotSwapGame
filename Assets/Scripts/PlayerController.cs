@@ -26,14 +26,23 @@ public class PlayerController : MonoBehaviour
     public float dropInterval = 1f; // Time between player drops
     private float dropTimer;
 
+    // Laser ability
+    public GameObject laserPrefab; // Prefab for player laser
+    public Transform laserShootPoint; // Point where laser is shot from
+    public float laserCooldown = 2f; // Cooldown time between laser shots
+    private float laserCooldownTimer;
+
 
     [Tooltip("Scale of Flying Enemy Type")]
     public Vector3 newFlyingScale; //scale of flying enemy sprite
-
+    [Tooltip("Scale of Laser Enemy Type")]
+    public Vector3 newLaserScale;
     public LayerMask platformLayer;  // Reference to the platform layer
 
     public Sprite flyingTypeSprite; 
+    public Sprite laserTypeSprite;
     private SpriteRenderer spriteRenderer;
+    private bool canShootLaser = false; 
 
     private void Awake()
     {
@@ -74,6 +83,17 @@ public class PlayerController : MonoBehaviour
         else
         {
             body.gravityScale = 5;  // Return to reg gravity
+        }
+
+        if (canShootLaser) //LASER SHOOTING
+        {
+            laserCooldownTimer -= Time.deltaTime;
+
+            if (Input.GetKeyDown(KeyCode.E) && laserCooldownTimer <= 0)
+            {
+                ShootLaser();
+                laserCooldownTimer = laserCooldown;
+            }
         }
 
         if (canFly == true)
@@ -143,6 +163,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void ResetAbilities()
+    {
+        // Reset abilities
+        canFly = false;
+        canShootLaser = false;
+    }
     private void Fly()
     {
         body.gravityScale = 0;  // zero gravity
@@ -158,7 +184,43 @@ public class PlayerController : MonoBehaviour
     // Called when player kills flying enemy
     public void GainFlyingAbilities()
     {
+        ResetAbilities();
         canFly = true;
+    }
+
+    private void ShootLaser()
+    {
+        // Instantiate the laser at the shoot point
+        GameObject laserBeam = Instantiate(laserPrefab, laserShootPoint.position, laserShootPoint.rotation);
+
+        // Determine the direction based on the player's facing direction
+        Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
+
+        // Pass the direction to the laser projectile
+        PlayerLaser beamScript = laserBeam.GetComponent<PlayerLaser>();
+        if (beamScript != null)
+        {
+            beamScript.SetDirection(direction);  // Set the direction for the laser
+        }
+
+        // Flip the laser prefab if the player is facing left
+        if (direction == Vector2.left)
+        {
+            laserBeam.transform.localScale = new Vector3(-laserBeam.transform.localScale.x, laserBeam.transform.localScale.y, laserBeam.transform.localScale.z);
+        }
+    }
+    public void GainLaserAbilities()
+    {
+        ResetAbilities();
+        spriteRenderer.sprite = laserTypeSprite;  // Change to laser sprite
+        transform.localScale = newLaserScale;  
+        Vector2 newSize = new Vector2(14.80273f, 14.70244f);  
+        boxCollider.size = newSize;
+        boxCollider.offset = new Vector2(0.2726059f, -1.744905f);  // Adjust collider offset
+
+        canShootLaser = true;  // Enable shooting laser ability
+        Debug.Log("Player gained laser shooting abilities.");
+        jumpPower = 15f;
     }
 
     public void TakeDamage(int damage)
@@ -208,21 +270,14 @@ public class PlayerController : MonoBehaviour
                 enemy.TakeDamage(1);
                 // Bounce the player up after stomp
                 body.velocity = new Vector2(body.velocity.x, jumpPower * 0.5f);
-                if (enemy.health <= 0)
-                {
-                    GainAbilitiesFromEnemy(enemy);
-                    if (enemy is FlyingEnemyController)  
-                    {
-                        GainFlyingAbilities();  
-                    }
-                }
             }
         }
     }
 
 
-    void GainAbilitiesFromEnemy(EnemyController enemy)
+    public void GainAbilitiesFromEnemy(EnemyController enemy)
     {
+        Debug.Log("Player gained abilities from: " + enemy.GetType().Name);
         speed = enemy.moveSpeed;
    
         enemy.UseAbility();
@@ -233,13 +288,18 @@ public class PlayerController : MonoBehaviour
             transform.localScale = newFlyingScale;
             Vector2 newSize = new Vector2(13.299f, 13.78256f); // New width and height of flying collider
             boxCollider.size = newSize;
-
         
             boxCollider.offset = new Vector2(-0.5520077f, -1.562553f);
+            GainFlyingAbilities();
+        }
+
+        else if (enemy is LaserEnemyController)
+        {
+            GainLaserAbilities(); 
         }
        
         hasAbilities = true;
-
+        Debug.Log("Player gained abilities from enemy!");
 
 
     }
@@ -270,10 +330,20 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        
+        if (FuelManager.Instance != null)
+        {
+            FuelManager.Instance.ResetFuel();
+        }
+  
         Debug.Log("Player Died!");
         //restart level
         UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        if (FuelManager.Instance != null)
+        {
+            FuelManager.Instance.ResetFuel();
+        }
     }
 
 

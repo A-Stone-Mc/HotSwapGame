@@ -18,6 +18,7 @@ public class FlyingEnemyController : EnemyController
     private float dropTimer;
 
     private Vector3 targetPosition;
+    private PlayerController playerController;
 
     void Start()
     {
@@ -29,6 +30,24 @@ public class FlyingEnemyController : EnemyController
     {
         Move();
         DropBombs();
+        UpdatePlayerReference();
+    }
+
+    private void UpdatePlayerReference()
+    {
+        if (playerController == null)
+        {
+            Debug.Log("Trying to find PlayerController...");
+            playerController = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                Debug.Log("PlayerController found and set.");
+            }
+            else
+            {
+                Debug.LogError("PlayerController is still null. Check if the Player has the 'Player' tag.");
+            }
+        }
     }
 
     // Override the base 
@@ -68,10 +87,24 @@ public class FlyingEnemyController : EnemyController
         Debug.Log("Flying Enemy's ability activated!");
     }
 
-    protected override void Die()
+
+    public override void Die()
     {
-        Debug.Log("Flying Enemy Died!");
+        if (playerController != null)
+        {
+            Debug.Log("Enemy is calling GainAbilitiesFromEnemy.");
+            playerController.GainAbilitiesFromEnemy(this);  
+        }
+        else
+        {
+            Debug.LogError("PlayerController is null in EnemyController.");
+        }
+        cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
+
     }
+
+
+
 }
 

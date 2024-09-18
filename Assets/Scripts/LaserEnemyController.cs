@@ -15,6 +15,8 @@ public class LaserEnemyController : EnemyController
     private Vector3 targetPosition;
     private bool playerInRange = false;
 
+    private PlayerController playerController;
+
     private void Start()
     {
         targetPosition = pointB.position; 
@@ -31,6 +33,23 @@ public class LaserEnemyController : EnemyController
             laserCooldownTimer = laserCooldown;
         }
         laserCooldownTimer -= Time.deltaTime;
+        UpdatePlayerReference();
+    }
+
+    private void UpdatePlayerReference()
+    {
+        if (playerController == null)
+        {
+            playerController = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                Debug.Log("PlayerController found and set.");
+            }
+            else
+            {
+                Debug.LogError("PlayerController is still null. Check if the Player has the 'Player' tag.");
+            }
+        }
     }
 
     // Patrol logic between two points
@@ -115,9 +134,16 @@ public class LaserEnemyController : EnemyController
         Debug.Log("Laser Enemy's ability activated!");
     }
 
-    protected override void Die()
+    public override void Die()
     {
-        Debug.Log("Laser Enemy Died!");
+        if (playerController != null)
+        {
+            Debug.Log("Player is gaining laser abilities");
+            playerController.GainAbilitiesFromEnemy(this);  
+        }
+        cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
+
     }
+
 }
