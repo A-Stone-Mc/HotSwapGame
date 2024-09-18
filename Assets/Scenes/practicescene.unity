@@ -1366,7 +1366,7 @@ MonoBehaviour:
   laserFirePoint: {fileID: 1504128535}
   laserRange: 10
   laserCooldown: 3
-  detectionRange: 8
+  detectionRange: 5
 --- !u!61 &580521625
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7047,7 +7047,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cdTimer: {fileID: 833024015}
-  newTimeRemaining: 10
+  newTimeRemaining: 50
   health: 3
   moveSpeed: 1
   pointA: {fileID: 2003297838}
@@ -7588,7 +7588,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -22}
+  m_AnchoredPosition: {x: 108.8, y: -12.2}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 1, y: 1}
 --- !u!1 &945388987
@@ -8356,8 +8356,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.34979248, y: 1.6615982}
-  m_SizeDelta: {x: 276.017, y: 205.1167}
+  m_AnchoredPosition: {x: -0.00075531006, y: -1.5470009}
+  m_SizeDelta: {x: 170.4, y: 117.624}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1262804289
 MonoBehaviour:
@@ -9441,8 +9441,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 23.799988, y: 43.567932}
-  m_SizeDelta: {x: 284.8838, y: 215.1926}
+  m_AnchoredPosition: {x: 17, y: 2.8125}
+  m_SizeDelta: {x: 170.4052, y: 99.625}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1643661762
 GameObject:
