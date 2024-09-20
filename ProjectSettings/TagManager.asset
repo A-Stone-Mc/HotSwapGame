@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Platform
   - Wall
+  - Bounds
   layers:
   - Default
   - TransparentFX

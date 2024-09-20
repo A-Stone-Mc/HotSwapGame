@@ -24,7 +24,7 @@ public class LightningBolt : MonoBehaviour
             Destroy(gameObject); 
         }
 
-        if (collision.CompareTag("Ground"))
+        if (collision.CompareTag("Ground") || collision.CompareTag("Bounds"))
         {
             Destroy(gameObject); 
         }
