@@ -220,7 +220,7 @@ public class PlayerController : MonoBehaviour
 
         canShootLaser = true;  // Enable shooting laser ability
         Debug.Log("Player gained laser shooting abilities.");
-        jumpPower = 15f;
+        jumpPower = 13f;
     }
 
     public void TakeDamage(int damage)
