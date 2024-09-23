@@ -8,18 +8,24 @@ public class CDTimer : MonoBehaviour
 {
     public float timeRemaining = 10f;
     public TMP_Text timerText;
+    public bool isCountdownActive = true;
 
     void Update()
     {
-        if (timeRemaining > 0)
+        if (isCountdownActive && timeRemaining > 0)
         {
             timeRemaining -= Time.deltaTime;
             timerText.text = timeRemaining.ToString("F2");
         }
-        else
+        else if (timeRemaining <= 0)
         {
             RestartLevel();
         }
+    }
+
+    public void DeactivateCountdown()
+    {
+        isCountdownActive = false;
     }
 
     void RestartLevel()

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class LevelCounter : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class LevelCounter : MonoBehaviour
     private bool levelCompleted = false;
     public GameObject endPopup;
     public TMP_Text finalTimeText;
+    public TMP_Text fuelStatusText;
+
+    public Button continueButton;
+    public Button retryButton;
 
     void Update()
     {
@@ -41,7 +46,37 @@ public class LevelCounter : MonoBehaviour
         
         endPopup.SetActive(true);
         finalTimeText.text = "Your Time: " + timerText.text;
+        if (FuelManager.Instance.FuelIsEnough())
+        {
+            fuelStatusText.text = "Congrats! You collected enough fuel.";
+            
+            continueButton.gameObject.SetActive(true);
+            retryButton.gameObject.SetActive(false);
+
+            continueButton.onClick.AddListener(() => LoadNextLevel());
+        }
+        else
+        {
+            fuelStatusText.text = "Oh no, you didn't collect enough fuel for your tank!";
+            continueButton.gameObject.SetActive(false);
+            retryButton.gameObject.SetActive(true);
+
+            retryButton.onClick.AddListener(() => RetryLevel());
+        }
        
         Debug.Log("Level Completed! Time: " + timerText.text);
+    }
+
+
+    public void LoadNextLevel()
+    {
+        
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // CHANGE LOADING NEXT SCENE
+    }
+
+    public void RetryLevel()
+    {
+        // Restart the current level
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
