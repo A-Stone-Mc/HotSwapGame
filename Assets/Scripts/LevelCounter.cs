@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Level : MonoBehaviour
+public class LevelCounter : MonoBehaviour
 {
     public TMP_Text timerText;
     private float levelTime = 0f;

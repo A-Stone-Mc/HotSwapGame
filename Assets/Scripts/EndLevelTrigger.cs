@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EndLevelTrigger : MonoBehaviour
 {
-    public LevelTimer levelTimer; 
+    public LevelCounter levelTimer; 
 
     private void OnTriggerEnter2D(Collider2D other)
     {
