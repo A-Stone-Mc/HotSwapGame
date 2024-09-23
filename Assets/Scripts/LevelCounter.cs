@@ -59,10 +59,11 @@ public class LevelCounter : MonoBehaviour
         {
             fuelStatusText.text = "Oh no, you didn't collect enough fuel for your tank!";
             continueButton.gameObject.SetActive(false);
-            retryButton.gameObject.SetActive(true);
-
-            retryButton.onClick.AddListener(() => RetryLevel());
         }
+
+        retryButton.gameObject.SetActive(true);
+
+        retryButton.onClick.AddListener(() => RetryLevel());
        
         Debug.Log("Level Completed! Time: " + timerText.text);
     }
