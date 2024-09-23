@@ -16,11 +16,17 @@ public class LaserEnemyController : EnemyController
     private bool playerInRange = false;
 
     private PlayerController playerController;
+    public AudioSource laserAudioSource;
+    public AudioClip laserSoundEffect;
 
     private void Start()
     {
         targetPosition = pointB.position; 
         laserCooldownTimer = laserCooldown;
+        if (laserAudioSource == null)
+        {
+            laserAudioSource = GetComponent<AudioSource>();
+        }
     }
 
     private void Update()
@@ -102,6 +108,14 @@ public class LaserEnemyController : EnemyController
     private void FireLaser()
     {
         Debug.Log("Laser Fired!");
+        if (laserSoundEffect != null && laserAudioSource != null)
+        {
+            laserAudioSource.PlayOneShot(laserSoundEffect);
+        }
+        else
+        {
+            Debug.LogWarning("no laser sound effect");
+        }
 
         // Instantiate the laser beam
         GameObject laserBeam = Instantiate(laserBeamPrefab, laserFirePoint.position, laserFirePoint.rotation);

@@ -19,11 +19,20 @@ public class FlyingEnemyController : EnemyController
 
     private Vector3 targetPosition;
     private PlayerController playerController;
+    public AudioSource bombAudioSource; 
+    public AudioClip bombDropSoundEffect;
+    private Renderer enemyRenderer;
+    
 
     void Start()
     {
         dropTimer = dropInterval;
         targetPosition = pointB.position; // Start by moving towards point B
+        if (bombAudioSource == null)
+        {
+            bombAudioSource = GetComponent<AudioSource>();
+        }
+        enemyRenderer = GetComponent<Renderer>();
     }
 
     void Update()
@@ -74,6 +83,18 @@ public class FlyingEnemyController : EnemyController
         dropTimer -= Time.deltaTime;
         if (dropTimer <= 0)
         {
+            if (enemyRenderer.isVisible) 
+            {
+
+                if (bombDropSoundEffect != null && bombAudioSource != null)
+                {
+                    bombAudioSource.PlayOneShot(bombDropSoundEffect);
+                }
+                else
+                {
+                    Debug.LogWarning("no lightning sound effect");
+                }
+            }
             
             Instantiate(bombPrefab, dropPoint1.position, Quaternion.identity);
             Instantiate(bombPrefab, dropPoint2.position, Quaternion.identity);
