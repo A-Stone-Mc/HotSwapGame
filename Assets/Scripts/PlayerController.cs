@@ -74,6 +74,9 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(DropThroughPlatform());
         }
+        
+       
+
 
 
         if (canFly && Input.GetKey(KeyCode.Space))
@@ -135,6 +138,7 @@ public class PlayerController : MonoBehaviour
         }
         else
             wallJumpCooldown += Time.deltaTime;
+
     }
     void Move()
     {
