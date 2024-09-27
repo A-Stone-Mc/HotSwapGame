@@ -30885,6 +30885,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   instructionPanel: {fileID: 458982542}
   goButton: {fileID: 1895210307}
+  alwaysShowInstructions: 0
 --- !u!1 &1853104427
 GameObject:
   m_ObjectHideFlags: 0

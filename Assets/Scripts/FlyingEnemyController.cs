@@ -22,6 +22,7 @@ public class FlyingEnemyController : EnemyController
     public AudioSource bombAudioSource; 
     public AudioClip bombDropSoundEffect;
     private Renderer enemyRenderer;
+    private Animator animator;
     
 
     void Start()
@@ -33,6 +34,11 @@ public class FlyingEnemyController : EnemyController
             bombAudioSource = GetComponent<AudioSource>();
         }
         enemyRenderer = GetComponent<Renderer>();
+        animator = GetComponent<Animator>();
+        if (animator != null)
+        {
+            animator.Play("FlyingEnemyAnimation"); 
+        }
     }
 
     void Update()

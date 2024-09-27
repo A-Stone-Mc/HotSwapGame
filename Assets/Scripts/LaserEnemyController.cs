@@ -19,6 +19,8 @@ public class LaserEnemyController : EnemyController
     public AudioSource laserAudioSource;
     public AudioClip laserSoundEffect;
 
+    private Animator animator;
+
     private void Start()
     {
         targetPosition = pointB.position; 
@@ -26,6 +28,14 @@ public class LaserEnemyController : EnemyController
         if (laserAudioSource == null)
         {
             laserAudioSource = GetComponent<AudioSource>();
+        }
+
+        animator = GetComponent<Animator>();
+
+        
+        if (animator != null)
+        {
+            animator.Play("Patrol");
         }
     }
 
@@ -72,6 +82,11 @@ public class LaserEnemyController : EnemyController
                 targetPosition = targetPosition == pointA.position ? pointB.position : pointA.position;
                 Flip();
             }
+
+            if (animator != null && !animator.GetCurrentAnimatorStateInfo(0).IsName("Patrol"))
+            {
+                animator.Play("Patrol");
+            }
         }
     }
 
@@ -115,6 +130,11 @@ public class LaserEnemyController : EnemyController
         else
         {
             Debug.LogWarning("no laser sound effect");
+        }
+
+        if (animator != null)
+        {
+            animator.SetTrigger("Shoot");
         }
 
         // Instantiate the laser beam
