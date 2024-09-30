@@ -33,7 +33,8 @@ public class PlayerLaser : MonoBehaviour
             EnemyController enemy = collision.GetComponent<EnemyController>();
             if (enemy != null)
             {
-                enemy.TakeDamage(damage);  // Deal damage to the enemy
+                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
+                enemy.TakeDamage(damage, knockbackDirection);  // Deal damage to the enemy
             }
             Destroy(gameObject);  // Destroy the laser on impact
         }

@@ -137,10 +137,10 @@ public class GasEnemyController : EnemyController
 
     public override void Die()
     {
-        // Handle the enemy's death
+    
         if (playerController != null)
         {
-            playerController.GainAbilitiesFromEnemy(this); // Or other death logic
+            playerController.GainAbilitiesFromEnemy(this); 
         }
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);

@@ -21,7 +21,9 @@ public class PlayerLightning : MonoBehaviour
             EnemyController enemy = collision.GetComponent<EnemyController>();
             if (enemy != null)
             {
-                enemy.TakeDamage(damage);
+                Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
+
+                enemy.TakeDamage(damage, knockbackDirection);
             }
             Destroy(gameObject);
         }

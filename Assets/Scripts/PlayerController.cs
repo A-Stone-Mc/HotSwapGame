@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask wallLayer;
     public GameObject lightningBoltPrefab; // Prefab for player lightingn
      public Transform dropPoint; 
+    public float damageCooldown = 1f;  // Cooldown time between damage
+    private float damageCooldownTimer = 0f;
 
     private Rigidbody2D body;
     //private Animator anim;
@@ -43,6 +45,12 @@ public class PlayerController : MonoBehaviour
     public Sprite laserTypeSprite;
     private SpriteRenderer spriteRenderer;
     private bool canShootLaser = false; 
+    public float knockbackForce = 10f;  // Force of knockback
+    public float knockbackDuration = 0.2f; // Duration of knockback
+    private bool isKnockedBack = false; // Is the player currently being knocked back?
+    private Vector2 lastMovementDirection;
+    private List<Collider2D> disabledEnemyColliders = new List<Collider2D>();
+     private bool isInvulnerable = false;  
 
     private void Awake()
     {
@@ -57,88 +65,103 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        horizontalInput = Input.GetAxis("Horizontal");
-
-        // Flip player when moving left-right, while preserving Y and Z scales
-        Vector3 scale = transform.localScale;
-
-        if (horizontalInput > 0.01f)
-            scale.x = Mathf.Abs(scale.x);  // Face right
-        else if (horizontalInput < -0.01f)
-            scale.x = -Mathf.Abs(scale.x);  // Face left
-
-        transform.localScale = scale;
-        // If the player presses "S" or "Down Arrow" drop through platform
-    
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        if (!isKnockedBack) 
         {
-            StartCoroutine(DropThroughPlatform());
-        }
-        
-       
+            horizontalInput = Input.GetAxis("Horizontal");
 
+            // Flip player when moving left-right
+            Vector3 scale = transform.localScale;
+            if (horizontalInput > 0.01f)
+                scale.x = Mathf.Abs(scale.x);  // Face right
+            else if (horizontalInput < -0.01f)
+                scale.x = -Mathf.Abs(scale.x);  // Face left
 
+            transform.localScale = scale;
 
-        if (canFly && Input.GetKey(KeyCode.Space))
-        {
-            Fly();  // Fly when the holding space
-        }
-        else
-        {
-            body.gravityScale = 5;  // Return to reg gravity
-        }
-
-        if (canShootLaser) //LASER SHOOTING
-        {
-            laserCooldownTimer -= Time.deltaTime;
-
-            if (Input.GetKeyDown(KeyCode.E) && laserCooldownTimer <= 0)
+            
+            if (horizontalInput != 0)
             {
-                ShootLaser();
-                laserCooldownTimer = laserCooldown;
+                lastMovementDirection = new Vector2(horizontalInput, 0);
             }
-        }
 
-        if (canFly == true)
-        {
-            dropTimer -= Time.deltaTime;
-            if (Input.GetKeyDown(KeyCode.E))
+            if (damageCooldownTimer > 0)
             {
-
-                if (dropTimer <= 0)
-                {
-
-                    DropLightningBolt();
-                    dropTimer = dropInterval;
-                }
+                damageCooldownTimer -= Time.deltaTime;
             }
-        }
-        // Normal movement
-        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
 
-        //Set animation
-        //anim.SetBool("IsWalking", horizontalInput != 0);
-       // anim.SetBool("IsInAir", !isGrounded());
-
-        // Wall jump logic
-        if (wallJumpCooldown > 0.2f)
-        {
+            // Normal movement
             body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-
-            if (onWall() && !isGrounded())
+       
+    
+            if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
             {
-                body.gravityScale = 0;
-                body.velocity = Vector2.zero;
+                StartCoroutine(DropThroughPlatform());
+            }
+            
+        
+
+
+
+            if (canFly && Input.GetKey(KeyCode.Space))
+            {
+                Fly();  // Fly when the holding space
             }
             else
-                body.gravityScale = 5;
+            {
+                body.gravityScale = 5;  // Return to reg gravity
+            }
 
-            if (Input.GetKey(KeyCode.Space))
-                Jump();
+            if (canShootLaser) //LASER SHOOTING
+            {
+                laserCooldownTimer -= Time.deltaTime;
+
+                if (Input.GetKeyDown(KeyCode.E) && laserCooldownTimer <= 0)
+                {
+                    ShootLaser();
+                    laserCooldownTimer = laserCooldown;
+                }
+            }
+
+            if (canFly == true)
+            {
+                dropTimer -= Time.deltaTime;
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+
+                    if (dropTimer <= 0)
+                    {
+
+                        DropLightningBolt();
+                        dropTimer = dropInterval;
+                    }
+                }
+            }
+        
+
+            //Set animation
+            //anim.SetBool("IsWalking", horizontalInput != 0);
+        // anim.SetBool("IsInAir", !isGrounded());
+
+            // Wall jump logic
+            if (wallJumpCooldown > 0.2f)
+            {
+                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+
+                if (onWall() && !isGrounded())
+                {
+                    body.gravityScale = 0;
+                    body.velocity = Vector2.zero;
+                }
+                else
+                    body.gravityScale = 5;
+
+                if (Input.GetKey(KeyCode.Space))
+                    Jump();
+            }
+            else
+                wallJumpCooldown += Time.deltaTime;
+
         }
-        else
-            wallJumpCooldown += Time.deltaTime;
-
     }
     void Move()
     {
@@ -192,6 +215,13 @@ public class PlayerController : MonoBehaviour
         canFly = true;
     }
 
+    private IEnumerator TempInvulnerability(float duration)
+    {
+        isInvulnerable = true;  // Enable invulnerability
+        yield return new WaitForSeconds(duration);  // Wait for the given duration
+        isInvulnerable = false;  // Disable invulnerability
+    }
+
     private void ShootLaser()
     {
         // Instantiate the laser at the shoot point
@@ -229,16 +259,73 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        currentHealth -= damage;
-        body.velocity = new Vector2(body.velocity.x, jumpPower * 0.3f);
-        if (currentHealth <= 0)
+       
+        if (!isInvulnerable && damageCooldownTimer <= 0)
         {
-            Die();
+            currentHealth -= damage;
+            damageCooldownTimer = damageCooldown;
+
+            // Apply knockback
+            StartCoroutine(ApplyKnockback());
+
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                StartCoroutine(FlashRed());  
+                Debug.Log("Player hit! Current Health: " + currentHealth);
+            }
+        }
+    }
+
+    private IEnumerator ApplyKnockback()
+    {
+        isKnockedBack = true;  // Disable player movement
+
+        // Temporarily disable collisions with nearby enemies
+        DisableEnemyColliders(true);
+
+        Vector2 knockbackDirection = -lastMovementDirection.normalized;  // Opposite of last movement direction
+        body.velocity = new Vector2(knockbackDirection.x * knockbackForce, knockbackForce);  // Apply knockback force
+
+        yield return new WaitForSeconds(knockbackDuration);  // Wait for knockback duration
+
+        isKnockedBack = false;  // Re-enable player movement
+
+        // Re-enable collisions with nearby enemies
+        DisableEnemyColliders(false);
+    }
+
+    private void DisableEnemyColliders(bool disable)
+    {
+        // Find all nearby enemies
+        Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, 5f);
+
+        if (disable)
+        {
+            // Disable colliders and store them in the list
+            foreach (Collider2D enemyCollider in nearbyEnemies)
+            {
+                if (enemyCollider.CompareTag("Enemy"))
+                {
+                    enemyCollider.enabled = false;  // Disable the enemy's collider
+                    disabledEnemyColliders.Add(enemyCollider);  // Add to the list for later re-enabling
+                }
+            }
         }
         else
         {
-            StartCoroutine(FlashRed()); //change color of spritee
-            Debug.Log("Player hit! Current Health: " + currentHealth);
+            // Re-enable colliders that were disabled
+            foreach (Collider2D enemyCollider in disabledEnemyColliders)
+            {
+                if (enemyCollider != null)  // Ensure the collider still exists
+                {
+                    enemyCollider.enabled = true;  // Re-enable the collider
+                }
+            }
+            disabledEnemyColliders.Clear();  // Clear the list after re-enabling
         }
     }
 
@@ -266,14 +353,23 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision) //deal damage to enemy
     {
+        
         if (collision.CompareTag("Enemy"))
         {
-            if (!hasAbilities && body.velocity.y < 0)
+            if (!hasAbilities && body.velocity.y < 0)  
             {
                 EnemyController enemy = collision.GetComponent<EnemyController>();
-                enemy.TakeDamage(1);
-                // Bounce the player up after stomp
-                body.velocity = new Vector2(body.velocity.x, jumpPower * 0.5f);
+                if (enemy != null)
+                {
+                    Vector2 knockbackDirection = (enemy.transform.position - transform.position).normalized;
+                    enemy.TakeDamage(1, knockbackDirection); 
+
+                    
+                    body.velocity = new Vector2(body.velocity.x, jumpPower * 0.7f);
+
+                    
+                    StartCoroutine(TempInvulnerability(0.3f)); 
+                }
             }
         }
     }

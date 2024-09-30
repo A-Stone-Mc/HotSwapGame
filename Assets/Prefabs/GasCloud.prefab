@@ -4912,4 +4912,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 1
-  damageInterval: 2
+  damageInterval: 3

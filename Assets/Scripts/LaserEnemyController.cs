@@ -14,6 +14,8 @@ public class LaserEnemyController : EnemyController
     private float laserCooldownTimer;
     private Vector3 targetPosition;
     private bool playerInRange = false;
+    public float waitTime = 2f;   // Time to wait at each patrol point
+    private bool isWaiting = false;
 
     private PlayerController playerController;
     public AudioSource laserAudioSource;
@@ -71,18 +73,18 @@ public class LaserEnemyController : EnemyController
     // Patrol logic between two points
     private void Patrol()
     {
-        if (!playerInRange)
+        if (!playerInRange && !isWaiting)  // Only patrol if not waiting and player is not in range
         {
             float step = moveSpeed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
 
-            // Switch direction when reaching the patrol point
+            // Check if the enemy reached the patrol point
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
             {
-                targetPosition = targetPosition == pointA.position ? pointB.position : pointA.position;
-                Flip();
+                StartCoroutine(WaitAndSwitchDirection());  // Wait before switching direction
             }
 
+            // Play patrol animation if applicable
             if (animator != null && !animator.GetCurrentAnimatorStateInfo(0).IsName("Patrol"))
             {
                 animator.Play("Patrol");
@@ -90,7 +92,23 @@ public class LaserEnemyController : EnemyController
         }
     }
 
-    // Check if the player is within detection range
+
+    private IEnumerator WaitAndSwitchDirection()
+    {
+        isWaiting = true;  
+
+        
+        yield return new WaitForSeconds(waitTime);
+
+        
+        targetPosition = targetPosition == pointA.position ? pointB.position : pointA.position;
+
+        Flip();  
+
+        isWaiting = false;  
+    }
+
+    
     private void CheckPlayerInRange()
     {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
@@ -109,7 +127,7 @@ public class LaserEnemyController : EnemyController
         }
     }
 
-    // Face the direction of the player
+    
     private void FacePlayer(GameObject player)
     {
         Vector3 direction = player.transform.position - transform.position;
