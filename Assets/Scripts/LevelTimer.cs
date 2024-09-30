@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class Level : MonoBehaviour
+public class LevelTimer : MonoBehaviour
 {
     public TMP_Text timerText;
     private float levelTime = 0f;
@@ -14,6 +14,7 @@ public class Level : MonoBehaviour
 
     void Update()
     {
+        
         if (!levelCompleted)
         {
             levelTime += Time.deltaTime;
@@ -27,11 +28,13 @@ public class Level : MonoBehaviour
         int minutes = Mathf.FloorToInt(levelTime / 60F);
         int seconds = Mathf.FloorToInt(levelTime % 60F);
        
-        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds );
+        
+        timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
 
     public void OnLevelCompleted()
     {
+        
         levelCompleted = true;
         ShowEndPopup();
     }
@@ -41,7 +44,15 @@ public class Level : MonoBehaviour
         
         endPopup.SetActive(true);
         finalTimeText.text = "Your Time: " + timerText.text;
-       
+
         Debug.Log("Level Completed! Time: " + timerText.text);
+    }
+
+    public void ResetTimer()
+    {
+        levelTime = 0f;
+        levelCompleted = false;
+
+        UpdateTimerText();
     }
 }

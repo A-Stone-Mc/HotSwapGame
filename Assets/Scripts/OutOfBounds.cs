@@ -8,6 +8,7 @@ public class OutOfBounds : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
+            FindObjectOfType<LevelTimer>().ResetTimer();
             UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         }

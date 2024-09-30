@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private float rotationDuration = 0.5f; 
     public GameObject lightningBoltPrefab; // Prefab for player lightingn
      public Transform dropPoint; 
     public float damageCooldown = 1f;  // Cooldown time between damage
@@ -175,6 +176,7 @@ public class PlayerController : MonoBehaviour
         {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
             //anim.SetTrigger("Jump");
+             StartCoroutine(RotatePlayer());
         }
         else if (onWall() && !isGrounded())
         {
@@ -188,6 +190,24 @@ public class PlayerController : MonoBehaviour
 
             wallJumpCooldown = 0;
         }
+    }
+
+    private IEnumerator RotatePlayer()
+    {
+        float elapsedTime = 0f;
+        Quaternion startRotation = transform.rotation;
+        Quaternion targetRotation = startRotation * Quaternion.Euler(0, 0, 360);  // Rotate 360 degrees
+
+        // Rotate the player over the duration of the jump
+        while (elapsedTime < rotationDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(startRotation, targetRotation, elapsedTime / rotationDuration);
+            yield return null;
+        }
+
+        // Ensure the rotation is exactly 360 degrees at the end
+        transform.rotation = targetRotation;
     }
 
     private void ResetAbilities()
@@ -254,7 +274,7 @@ public class PlayerController : MonoBehaviour
 
         canShootLaser = true;  // Enable shooting laser ability
         Debug.Log("Player gained laser shooting abilities.");
-        jumpPower = 13f;
+        jumpPower = 22f;
     }
 
     public void TakeDamage(int damage)
@@ -438,6 +458,7 @@ public class PlayerController : MonoBehaviour
   
         Debug.Log("Player Died!");
         //restart level
+        FindObjectOfType<LevelTimer>().ResetTimer();
         UnityEngine.SceneManagement.SceneManager.LoadScene(
         UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         if (FuelManager.Instance != null)
