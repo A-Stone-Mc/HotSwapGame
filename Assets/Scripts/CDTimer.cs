@@ -32,7 +32,5 @@ public class CDTimer : MonoBehaviour
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
-
-        FindObjectOfType<LevelTimer>().ResetTimer();
     }
 }

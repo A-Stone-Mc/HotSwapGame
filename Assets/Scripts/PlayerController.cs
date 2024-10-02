@@ -82,7 +82,21 @@ public class PlayerController : MonoBehaviour
     public Sprite gasTypeSprite; // The sprite for the gas ability form
     private Vector2 gasColliderSize = new Vector2(11.96274f, 19.24092f); 
     private Vector2 gasColliderOffset = new Vector2(-0.8735647f, 0.7814231f); 
+    private float arcSpeedMultiplier = 0.5f; // Adjust this value to control the speed of the arc (lower is slower)
+    private bool canChargeJump = false; 
+    private bool isChargingJump = false; 
+    private float chargeJumpTimer = 0f; 
+    private float maxChargeTime = 1f; 
 
+    private bool chargeJumpReady = false;
+
+    private bool isGroundSlamming = false; 
+    public float groundSlamSpeed = 30f; 
+    public float slamDamageRadius = 5f;
+    private bool isFalling = false;  
+    private float groundSlamTimer = 0f; 
+    private float groundSlamDuration = 3f;
+    private bool canGroundSlam = false; 
     private void Awake()
     {
         //Grab references for rigidbody and animator from object
@@ -108,6 +122,30 @@ public class PlayerController : MonoBehaviour
                 scale.x = -Mathf.Abs(scale.x);  // Face left
 
             transform.localScale = scale;
+
+            if (canShootLaser && canChargeJump)
+            {
+                HandleChargeJump(); 
+            }
+
+
+            if (canGroundSlam && groundSlamTimer > 0)
+            {
+                groundSlamTimer -= Time.deltaTime;
+
+                
+                if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+                {
+                    isGroundSlamming = true; 
+                    body.velocity = new Vector2(body.velocity.x, -groundSlamSpeed); 
+                    Debug.Log("Ground Slam initiated!");
+                }
+
+                if (groundSlamTimer <= 0)
+                {
+                    canGroundSlam = false; 
+                }
+            }
 
             
             if (horizontalInput != 0)
@@ -198,6 +236,11 @@ public class PlayerController : MonoBehaviour
                         DrawArc(throwPoint.position, currentThrowAngle, throwForce);
                     }
                 }
+
+             if (GasAbilityCooldownTimer > 0)
+            {
+                GasAbilityCooldownTimer -= Time.deltaTime;
+            }
 
                 if (Input.GetKeyUp(KeyCode.E))
                 {
@@ -291,6 +334,8 @@ public class PlayerController : MonoBehaviour
         canFly = false;
         canShootLaser = false;
         canThrowGasBomb = false;
+        canChargeJump = false; 
+        isGroundSlamming = false;
     }
     private void Fly()
     {
@@ -298,32 +343,140 @@ public class PlayerController : MonoBehaviour
         body.velocity = new Vector2(body.velocity.x, flySpeed);  //slowly upwards
     }
 
-    private void AdjustThrowAngle()
+    private void HandleChargeJump()
     {
-        
-        float angleAdjustment = (maxThrowAngle - minThrowAngle) * Time.deltaTime * 2f; 
-        currentThrowAngle += angleAdjustment;
-        if (currentThrowAngle > maxThrowAngle)
+        // Start charging when the R key is pressed
+        if (Input.GetKeyDown(KeyCode.R) && !isChargingJump && !chargeJumpReady)
         {
-            currentThrowAngle = minThrowAngle; // Loop back to minimum angle
+            isChargingJump = true; // Begin the charging process
+            chargeJumpTimer = 0f;  // Reset the charge timer
+        }
+
+        // If the jump is being charged
+        if (isChargingJump)
+        {
+            chargeJumpTimer += Time.deltaTime; // Increase the charge timer
+
+            // If fully charged or reached max charge time, perform the jump
+            if (chargeJumpTimer >= maxChargeTime)
+            {
+                PerformChargeJump();
+                isChargingJump = false;  // Reset charging
+                chargeJumpReady = false; // Reset charge jump ready state
+            }
         }
     }
 
+    private void PerformChargeJump()
+    {
+        // Jump with a force proportional to the charge time
+        float chargeMultiplier = Mathf.Lerp(1f, 1.5f, chargeJumpTimer / maxChargeTime);
+        body.velocity = new Vector2(body.velocity.x, jumpPower * chargeMultiplier); // Apply jump force
+        PlaySound(jumpSound); // Play sound if needed
+        Debug.Log("Charged Jump Performed with force multiplier: " + chargeMultiplier);
+
+        // Enable ground slam after charge jump
+        canGroundSlam = true;
+        groundSlamTimer = groundSlamDuration; // Set the timer for 3 seconds
+    }
+
+    private void HandleGroundSlam()
+    {
+        // Check if the player is falling and presses S or the down arrow
+        if (isFalling && !isGroundSlamming && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
+        {
+            // Start the ground slam
+            isGroundSlamming = true;
+            body.velocity = new Vector2(body.velocity.x, -groundSlamSpeed); // Speed up the player's downward movement
+            Debug.Log("Ground Slam initiated!");
+        }
+
+        // Check when the player has hit the ground (velocity close to zero)
+        if (isGroundSlamming && Mathf.Abs(body.velocity.y) < 0.1f)
+        {
+            PerformGroundSlam();
+            isGroundSlamming = false; // Reset the slam state after hitting the ground
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.CompareTag("Ground") && isGroundSlamming)
+        {
+            PerformGroundSlam();
+            isGroundSlamming = false; // Reset ground slam state after landing
+        }
+    }
+
+    private void PerformGroundSlam()
+    {
+       
+        Debug.Log("Ground Slam performed!");
+
+        // Apply area of effect damage to enemies around the player
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, slamDamageRadius);
+
+        foreach (Collider2D collider in colliders)
+        {
+            if (collider.CompareTag("Enemy")) // Ensure the object has the "Enemy" tag
+            {
+                EnemyController enemyController = collider.GetComponent<EnemyController>();
+                if (enemyController != null)
+                {
+                    enemyController.TakeDamage(1, Vector2.zero); // Deal damage to enemies
+                    Debug.Log("Enemy hit by ground slam!");
+                }
+            }
+        }
+    }
+
+
+    private void AdjustThrowAngle()
+    {
+        
+        float angleAdjustment = (maxThrowAngle - minThrowAngle) * Time.deltaTime * arcSpeedMultiplier;
+
+        
+        if (transform.localScale.x < 0)
+        {
+            currentThrowAngle -= angleAdjustment; 
+            if (currentThrowAngle < -maxThrowAngle) 
+            {
+                currentThrowAngle = -minThrowAngle;
+            }
+        }
+        else
+        {
+            currentThrowAngle += angleAdjustment;
+            if (currentThrowAngle > maxThrowAngle)
+            {
+                currentThrowAngle = minThrowAngle; 
+            }
+        }
+    }
+
+
     private void DrawArc(Vector2 startPosition, float angle, float force)
     {
-        int arcResolution = 30; // Number of points in the arc
-        arcRenderer.positionCount = arcResolution; // Set the number of points in the line renderer
-        arcRenderer.enabled = true; // Enable the line renderer
+        int arcResolution = 30; 
+        arcRenderer.positionCount = arcResolution;
+        arcRenderer.enabled = true; 
 
-        Vector2 direction = Quaternion.Euler(0, 0, angle) * transform.right; // Direction based on player's facing
+        
+        Vector2 direction = transform.localScale.x > 0 
+                            ? Quaternion.Euler(0, 0, angle) * Vector2.right // Right-facing
+                            : Quaternion.Euler(0, 0, -angle) * Vector2.left; // Left-facing (invert angle)
 
+        
         for (int i = 0; i < arcResolution; i++)
         {
             float t = i / (float)arcResolution;
             Vector2 point = startPosition + direction * force * t + 0.5f * Physics2D.gravity * t * t;
-            arcRenderer.SetPosition(i, point); // Set each point in the line renderer
+            arcRenderer.SetPosition(i, point); 
         }
     }
+
+
 
 
     private void ThrowGasBomb()
@@ -331,8 +484,11 @@ public class PlayerController : MonoBehaviour
         GameObject bomb = Instantiate(gasBombPrefab, throwPoint.position, Quaternion.identity);
         Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
 
-        // Calculate throw direction based on the current throw angle
-        Vector2 throwDirection = Quaternion.Euler(0, 0, currentThrowAngle) * transform.right;
+        
+        Vector2 throwDirection = transform.localScale.x > 0 
+                                ? Quaternion.Euler(0, 0, currentThrowAngle) * Vector2.right // Right-facing
+                                : Quaternion.Euler(0, 0, -currentThrowAngle) * Vector2.left; // Left-facing (invert angle)
+        
         rb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
     }
 
@@ -389,9 +545,11 @@ public class PlayerController : MonoBehaviour
         boxCollider.size = newSize;
         boxCollider.offset = new Vector2(0.2726059f, -1.744905f);  // Adjust collider offset
 
+        canChargeJump = true;
+
         canShootLaser = true;  // Enable shooting laser ability
         Debug.Log("Player gained laser shooting abilities.");
-        jumpPower = 22f;
+        jumpPower = 16f;
     }
 
     public void TakeDamage(int damage)
@@ -600,7 +758,6 @@ public class PlayerController : MonoBehaviour
   
         Debug.Log("Player Died!");
         //restart level
-        FindObjectOfType<LevelTimer>().ResetTimer();
         UnityEngine.SceneManagement.SceneManager.LoadScene(
         UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
         if (FuelManager.Instance != null)

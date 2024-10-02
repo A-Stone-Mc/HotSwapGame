@@ -65,7 +65,7 @@ public class LevelCounter : MonoBehaviour
 
         retryButton.onClick.AddListener(() => RetryLevel());
        
-        Debug.Log("Level Completed! Time: " + timerText.text);
+        Debug.Log("Level Completed! Your Time: " + timerText.text);
     }
 
 
