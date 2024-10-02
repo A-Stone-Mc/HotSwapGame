@@ -2,15 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement; 
+using UnityEngine.UI;
 
 public class PauseScreen : MonoBehaviour
 {
-    public GameObject pauseText; 
+    public GameObject pauseMenuPanel;  
+    public GameObject howToPlayPanel;  
     private bool isPaused = false;
 
     void Update()
     {
-        
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
@@ -26,21 +28,34 @@ public class PauseScreen : MonoBehaviour
 
     void PauseGame()
     {
-        
-        Time.timeScale = 0f;
+        Time.timeScale = 0f;  
         isPaused = true;
-
-        // Show the pause text
-        pauseText.SetActive(true);
+        pauseMenuPanel.SetActive(true);  
     }
 
-    void ResumeGame()
+    public void ResumeGame()
     {
-        
-        Time.timeScale = 1f;
+        Time.timeScale = 1f;  
         isPaused = false;
+        pauseMenuPanel.SetActive(false);  
+        howToPlayPanel.SetActive(false);  
+    }
 
-        
-        pauseText.SetActive(false);
+    public void RestartLevel()
+    {
+        Time.timeScale = 1f;  
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);  
+    }
+
+    public void ShowHowToPlay()
+    {
+        pauseMenuPanel.SetActive(false);  
+        howToPlayPanel.SetActive(true);  
+    }
+
+    public void BackToPauseMenu()
+    {
+        howToPlayPanel.SetActive(false);  
+        pauseMenuPanel.SetActive(true);   
     }
 }

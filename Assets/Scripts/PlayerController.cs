@@ -6,6 +6,7 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private float speed;
+    public float airSpeed = 8f;
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
@@ -28,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private float flySpeed = 2f; //speed of flight powers
     public float dropInterval = 1f; // Time between player drops
     private float dropTimer;
+    private bool isInAir= false;
 
     // Laser ability
     public GameObject laserPrefab; // Prefab for player laser
@@ -52,6 +54,34 @@ public class PlayerController : MonoBehaviour
     private Vector2 lastMovementDirection;
     private List<Collider2D> disabledEnemyColliders = new List<Collider2D>();
      private bool isInvulnerable = false;  
+    public AudioSource audioSource;
+
+    // Audio clips for different actions
+    public AudioClip shootLaserSound;
+    public AudioClip dropLightningSound;
+    public AudioClip jumpSound;
+    public AudioClip walkSound;
+
+    private float walkSoundCooldown = 0.2f;  // Cooldown for walking sound effects
+    private float nextWalkSoundTime = 0f;
+
+    // Gas ability variables
+    public GameObject gasBombPrefab; 
+    public Transform throwPoint; 
+    public LineRenderer arcRenderer; 
+    public float maxThrowAngle = 60f;
+    public float minThrowAngle = 10f; 
+    public float throwForce = 15f;
+    private float currentThrowAngle; 
+    private bool isHoldingThrow = false; 
+    private bool canThrowGasBomb = false; 
+    private float GasAbilityCooldownTimer = 0f;
+    public float GasAbilityCooldown = 0.5f; 
+    [Tooltip("Scale of Gas Enemy Type")]
+    public Vector3 newGasScale; // The scale for the gas ability form
+    public Sprite gasTypeSprite; // The sprite for the gas ability form
+    private Vector2 gasColliderSize = new Vector2(11.96274f, 19.24092f); 
+    private Vector2 gasColliderOffset = new Vector2(-0.8735647f, 0.7814231f); 
 
     private void Awake()
     {
@@ -85,19 +115,37 @@ public class PlayerController : MonoBehaviour
                 lastMovementDirection = new Vector2(horizontalInput, 0);
             }
 
+            if (isGrounded() && horizontalInput != 0 && Time.time >= nextWalkSoundTime)
+            {
+                PlaySound(walkSound);
+                nextWalkSoundTime = Time.time + walkSoundCooldown;
+            }
+
             if (damageCooldownTimer > 0)
             {
                 damageCooldownTimer -= Time.deltaTime;
             }
 
+
             // Normal movement
             body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+
+            if (isInAir && canShootLaser)
+            {
+                body.velocity = new Vector2(horizontalInput * airSpeed, body.velocity.y);  
+            }
+            else
+            {
+                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);  
+            }
        
     
             if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
             {
                 StartCoroutine(DropThroughPlatform());
             }
+
+            
             
         
 
@@ -134,6 +182,31 @@ public class PlayerController : MonoBehaviour
 
                         DropLightningBolt();
                         dropTimer = dropInterval;
+                    }
+                }
+            }
+
+
+            if (canThrowGasBomb)
+            {
+                if (Input.GetKey(KeyCode.E))
+                {
+                    if (GasAbilityCooldownTimer <= 0)
+                    {
+                        isHoldingThrow = true;
+                        AdjustThrowAngle();
+                        DrawArc(throwPoint.position, currentThrowAngle, throwForce);
+                    }
+                }
+
+                if (Input.GetKeyUp(KeyCode.E))
+                {
+                    if (isHoldingThrow)
+                    {
+                        isHoldingThrow = false;
+                        arcRenderer.enabled = false;
+                        ThrowGasBomb();
+                        GasAbilityCooldownTimer = GasAbilityCooldown;
                     }
                 }
             }
@@ -175,6 +248,8 @@ public class PlayerController : MonoBehaviour
         if (isGrounded())
         {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
+            isInAir = true;
+            PlaySound(jumpSound);
             //anim.SetTrigger("Jump");
              StartCoroutine(RotatePlayer());
         }
@@ -215,6 +290,7 @@ public class PlayerController : MonoBehaviour
         // Reset abilities
         canFly = false;
         canShootLaser = false;
+        canThrowGasBomb = false;
     }
     private void Fly()
     {
@@ -222,9 +298,48 @@ public class PlayerController : MonoBehaviour
         body.velocity = new Vector2(body.velocity.x, flySpeed);  //slowly upwards
     }
 
+    private void AdjustThrowAngle()
+    {
+        
+        float angleAdjustment = (maxThrowAngle - minThrowAngle) * Time.deltaTime * 2f; 
+        currentThrowAngle += angleAdjustment;
+        if (currentThrowAngle > maxThrowAngle)
+        {
+            currentThrowAngle = minThrowAngle; // Loop back to minimum angle
+        }
+    }
+
+    private void DrawArc(Vector2 startPosition, float angle, float force)
+    {
+        int arcResolution = 30; // Number of points in the arc
+        arcRenderer.positionCount = arcResolution; // Set the number of points in the line renderer
+        arcRenderer.enabled = true; // Enable the line renderer
+
+        Vector2 direction = Quaternion.Euler(0, 0, angle) * transform.right; // Direction based on player's facing
+
+        for (int i = 0; i < arcResolution; i++)
+        {
+            float t = i / (float)arcResolution;
+            Vector2 point = startPosition + direction * force * t + 0.5f * Physics2D.gravity * t * t;
+            arcRenderer.SetPosition(i, point); // Set each point in the line renderer
+        }
+    }
+
+
+    private void ThrowGasBomb()
+    {
+        GameObject bomb = Instantiate(gasBombPrefab, throwPoint.position, Quaternion.identity);
+        Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
+
+        // Calculate throw direction based on the current throw angle
+        Vector2 throwDirection = Quaternion.Euler(0, 0, currentThrowAngle) * transform.right;
+        rb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
+    }
+
     private void DropLightningBolt()
     {
         Instantiate(lightningBoltPrefab, dropPoint.position, Quaternion.identity);
+        PlaySound(dropLightningSound); 
         
     }
 
@@ -262,6 +377,8 @@ public class PlayerController : MonoBehaviour
         {
             laserBeam.transform.localScale = new Vector3(-laserBeam.transform.localScale.x, laserBeam.transform.localScale.y, laserBeam.transform.localScale.z);
         }
+
+        PlaySound(shootLaserSound); 
     }
     public void GainLaserAbilities()
     {
@@ -366,10 +483,8 @@ public class PlayerController : MonoBehaviour
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
         return raycastHit.collider != null;
     }
-    public bool canAttack()
-    {
-        return horizontalInput == 0 && isGrounded() && !onWall();
-    }
+
+
 
     private void OnTriggerEnter2D(Collider2D collision) //deal damage to enemy
     {
@@ -417,11 +532,30 @@ public class PlayerController : MonoBehaviour
         {
             GainLaserAbilities(); 
         }
+
+        else if (enemy is GasEnemyController)
+        {
+            GainGasAbilities(); 
+        }
        
         hasAbilities = true;
         Debug.Log("Player gained abilities from enemy!");
 
 
+    }
+
+    private void GainGasAbilities()
+    {
+        ResetAbilities(); 
+
+       
+        spriteRenderer.sprite = gasTypeSprite; 
+        transform.localScale = newGasScale;     
+
+       
+        boxCollider.size = gasColliderSize;
+        boxCollider.offset = gasColliderOffset;
+        canThrowGasBomb = true; 
     }
 
     private IEnumerator FlashRed()
@@ -445,6 +579,14 @@ public class PlayerController : MonoBehaviour
 
         // enable collision with platforms
         Physics2D.IgnoreLayerCollision(LayerMask.NameToLayer("Player"), LayerMask.NameToLayer("Platform"), false);
+    }
+
+    private void PlaySound(AudioClip clip)
+    {
+        if (clip != null)
+        {
+            audioSource.PlayOneShot(clip);  // Play the sound
+        }
     }
 
 

@@ -30,8 +30,9 @@ public class CDTimer : MonoBehaviour
 
     void RestartLevel()
     {
-        FindObjectOfType<LevelTimer>().ResetTimer();
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+
+        FindObjectOfType<LevelTimer>().ResetTimer();
     }
 }
