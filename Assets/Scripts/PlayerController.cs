@@ -96,7 +96,11 @@ public class PlayerController : MonoBehaviour
     private bool isFalling = false;  
     private float groundSlamTimer = 0f; 
     private float groundSlamDuration = 3f;
-    private bool canGroundSlam = false; 
+    private bool canGroundSlam = false;
+    public GameObject boomImagePrefab;
+    public float boomOffset = 2f; 
+    public float boomDisplayDuration = 1f;
+    public float boomHeightOffset = -1.5f;
     private void Awake()
     {
         //Grab references for rigidbody and animator from object
@@ -413,6 +417,20 @@ public class PlayerController : MonoBehaviour
        
         Debug.Log("Ground Slam performed!");
 
+        Vector3 playerPosition = transform.position;
+
+        
+        Vector3 boomPositionRight = new Vector3(playerPosition.x + boomOffset, playerPosition.y + boomHeightOffset, playerPosition.z);
+        Vector3 boomPositionLeft = new Vector3(playerPosition.x - boomOffset, playerPosition.y + boomHeightOffset, playerPosition.z);
+
+       
+        GameObject boomEffectRight = Instantiate(boomImagePrefab, boomPositionRight, Quaternion.identity);
+
+        
+        GameObject boomEffectLeft = Instantiate(boomImagePrefab, boomPositionLeft, Quaternion.identity);
+        Destroy(boomEffectRight, boomDisplayDuration);
+        Destroy(boomEffectLeft, boomDisplayDuration);
+        
         // Apply area of effect damage to enemies around the player
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, slamDamageRadius);
 
