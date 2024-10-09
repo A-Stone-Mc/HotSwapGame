@@ -61,6 +61,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip dropLightningSound;
     public AudioClip jumpSound;
     public AudioClip walkSound;
+    public AudioClip slamSound;
 
     private float walkSoundCooldown = 0.2f;  // Cooldown for walking sound effects
     private float nextWalkSoundTime = 0f;
@@ -93,7 +94,6 @@ public class PlayerController : MonoBehaviour
     private bool isGroundSlamming = false; 
     public float groundSlamSpeed = 30f; 
     public float slamDamageRadius = 5f;
-    private bool isFalling = false;  
     private float groundSlamTimer = 0f; 
     private float groundSlamDuration = 3f;
     private bool canGroundSlam = false;
@@ -284,11 +284,6 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-    void Move()
-    {
-        float moveX = Input.GetAxis("Horizontal");
-        body.velocity = new Vector2(moveX * speed, body.velocity.y);
-    }
 
     private void Jump()
     {
@@ -296,7 +291,8 @@ public class PlayerController : MonoBehaviour
         {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
             isInAir = true;
-            PlaySound(jumpSound);
+            if (canFly == false)
+                PlaySound(jumpSound);
             //anim.SetTrigger("Jump");
              StartCoroutine(RotatePlayer());
         }
@@ -384,30 +380,14 @@ public class PlayerController : MonoBehaviour
         groundSlamTimer = groundSlamDuration; // Set the timer for 3 seconds
     }
 
-    private void HandleGroundSlam()
-    {
-        // Check if the player is falling and presses S or the down arrow
-        if (isFalling && !isGroundSlamming && (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)))
-        {
-            // Start the ground slam
-            isGroundSlamming = true;
-            body.velocity = new Vector2(body.velocity.x, -groundSlamSpeed); // Speed up the player's downward movement
-            Debug.Log("Ground Slam initiated!");
-        }
 
-        // Check when the player has hit the ground (velocity close to zero)
-        if (isGroundSlamming && Mathf.Abs(body.velocity.y) < 0.1f)
-        {
-            PerformGroundSlam();
-            isGroundSlamming = false; // Reset the slam state after hitting the ground
-        }
-    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.collider.CompareTag("Ground") && isGroundSlamming)
         {
             PerformGroundSlam();
+            PlaySound(slamSound);
             isGroundSlamming = false; // Reset ground slam state after landing
         }
     }
@@ -415,7 +395,7 @@ public class PlayerController : MonoBehaviour
     private void PerformGroundSlam()
     {
        
-        Debug.Log("Ground Slam performed!");
+        Debug.Log("Ground Slam performed");
 
         Vector3 playerPosition = transform.position;
 
@@ -436,13 +416,13 @@ public class PlayerController : MonoBehaviour
 
         foreach (Collider2D collider in colliders)
         {
-            if (collider.CompareTag("Enemy")) // Ensure the object has the "Enemy" tag
+            if (collider.CompareTag("Enemy")) 
             {
                 EnemyController enemyController = collider.GetComponent<EnemyController>();
                 if (enemyController != null)
                 {
-                    enemyController.TakeDamage(1, Vector2.zero); // Deal damage to enemies
-                    Debug.Log("Enemy hit by ground slam!");
+                    enemyController.TakeDamage(3, Vector2.zero); 
+                    Debug.Log("Enemy hit by ground slam");
                 }
             }
         }
@@ -517,7 +497,7 @@ public class PlayerController : MonoBehaviour
         
     }
 
-    // Called when player kills flying enemy
+    
     public void GainFlyingAbilities()
     {
         ResetAbilities();
@@ -533,13 +513,13 @@ public class PlayerController : MonoBehaviour
 
     private void ShootLaser()
     {
-        // Instantiate the laser at the shoot point
+        
         GameObject laserBeam = Instantiate(laserPrefab, laserShootPoint.position, laserShootPoint.rotation);
 
         // Determine the direction based on the player's facing direction
         Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
 
-        // Pass the direction to the laser projectile
+        
         PlayerLaser beamScript = laserBeam.GetComponent<PlayerLaser>();
         if (beamScript != null)
         {
@@ -662,7 +642,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-    private void OnTriggerEnter2D(Collider2D collision) //deal damage to enemy
+    private void OnTriggerEnter2D(Collider2D collision) //deal damage to enemy with feet collider
     {
         
         if (collision.CompareTag("Enemy"))
@@ -677,6 +657,7 @@ public class PlayerController : MonoBehaviour
 
                     
                     body.velocity = new Vector2(body.velocity.x, jumpPower * 0.7f);
+                    PlaySound(jumpSound);
 
                     
                     StartCoroutine(TempInvulnerability(0.3f)); 
@@ -689,9 +670,9 @@ public class PlayerController : MonoBehaviour
     public void GainAbilitiesFromEnemy(EnemyController enemy)
     {
         Debug.Log("Player gained abilities from: " + enemy.GetType().Name);
-        speed = enemy.moveSpeed;
    
         enemy.UseAbility();
+        speed = enemy.moveSpeed;
 
         if (enemy is FlyingEnemyController)
         {
