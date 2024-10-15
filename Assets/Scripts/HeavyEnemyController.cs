@@ -62,16 +62,22 @@ public class HeavyEnemyController : EnemyController
    
     private void MoveTowardsPlayer()
     {
-        Vector3 direction = (player.position - transform.position).normalized;
-        transform.position += direction * moveSpeed * Time.deltaTime;
-
         
-        if ((direction.x > 0 && !isFacingRight) || (direction.x < 0 && isFacingRight))
+        Vector3 direction = (player.position - transform.position).normalized;
+        
+        
+        Vector3 horizontalMove = new Vector3(direction.x, 0f, 0f);
+
+       
+        transform.position += horizontalMove * moveSpeed * Time.deltaTime;
+
+       
+        if ((horizontalMove.x > 0 && !isFacingRight) || (horizontalMove.x < 0 && isFacingRight))
         {
             Flip();
         }
 
-        
+       
         if (animator != null)
         {
             animator.SetBool("IsWalking", true);
