@@ -4,42 +4,51 @@ using UnityEngine;
 
 public class GasEnemyController : EnemyController
 {
-    public Transform pointA; // Patrol point A
-    public Transform pointB; // Patrol point B
-    public Transform throwPoint; // The point from which the gas bomb is thrown
-    public GameObject gasBombPrefab; // The gas bomb prefab
-    public float throwForce = 10f; // The force at which the gas bomb is thrown
-    public float detectionRange = 10f; // How close the player must be to throw a bomb
-    public float attackCooldown = 5f; // Time between bomb throws
-    public float PatrolmoveSpeed = 2f; // Speed of movement when patrolling
+    public Transform pointA;
+    public Transform pointB; 
+    public Transform throwPoint; 
+    public GameObject gasBombPrefab; 
+    public float throwForce = 10f;
+    public float detectionRange = 10f; 
+    public float attackCooldown = 5f; 
+    public float PatrolmoveSpeed = 2f;
     private float attackCooldownTimer;
 
     private Vector3 targetPosition;
     private bool playerInRange = false;
     private PlayerController playerController;
+    private bool isAttacking = false;
 
-    private Animator animator; // Reference to the Animator
+    private Animator animator; 
 
     private void Start()
     {
-        targetPosition = pointB.position; // Start patrolling toward point B
+        targetPosition = pointB.position;
         attackCooldownTimer = attackCooldown;
-        animator = GetComponent<Animator>(); // Get the Animator component
+        animator = GetComponent<Animator>(); 
     }
 
     private void Update()
     {
         Patrol();
         CheckPlayerInRange();
-        if (playerInRange && attackCooldownTimer <= 0)
+        attackCooldownTimer -= Time.deltaTime; 
+        
+       
+        
+        if (playerInRange && attackCooldownTimer <= 0 && !isAttacking)
         {
             
-            animator.SetTrigger("Throw");
-            attackCooldownTimer = attackCooldown;
+            
+            isAttacking = true;
+            animator.SetTrigger("Throw");  
+            
+            attackCooldownTimer = attackCooldown; 
         }
-        attackCooldownTimer -= Time.deltaTime;
+
         UpdatePlayerReference();
     }
+
 
     private void UpdatePlayerReference()
     {
@@ -108,18 +117,30 @@ public class GasEnemyController : EnemyController
     public void ThrowGasBomb()
     {
         if (playerController == null) return;
-
         
         GameObject gasBomb = Instantiate(gasBombPrefab, throwPoint.position, Quaternion.identity);
         Rigidbody2D rb = gasBomb.GetComponent<Rigidbody2D>();
 
         
         Vector2 direction = (playerController.transform.position - throwPoint.position).normalized;
-
-        
         float xForce = direction.x * throwForce; 
         float yForce = Mathf.Abs(direction.y + 0.5f) * throwForce; 
         rb.AddForce(new Vector2(xForce, yForce), ForceMode2D.Impulse);
+
+        
+       
+    
+        StartCoroutine(CooldownAfterThrow());
+    }
+
+    private IEnumerator CooldownAfterThrow()
+    {
+        
+        yield return new WaitForSeconds(attackCooldown);
+
+        
+        isAttacking = false;
+ 
     }
 
     

@@ -101,6 +101,7 @@ public class PlayerController : MonoBehaviour
     public float boomOffset = 2f; 
     public float boomDisplayDuration = 1f;
     public float boomHeightOffset = -1.5f;
+    public HealthUIManager healthUIManager;
     private void Awake()
     {
         //Grab references for rigidbody and animator from object
@@ -570,6 +571,8 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(FlashRed());  
                 Debug.Log("Player hit! Current Health: " + currentHealth);
             }
+
+            healthUIManager.TakeDamage(damage);
         }
     }
 
