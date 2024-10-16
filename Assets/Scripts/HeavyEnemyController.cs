@@ -10,7 +10,7 @@ public class HeavyEnemyController : EnemyController
     public float hammerSmashCooldown = 5f;  
     public float hammerSmashDamageRadius = 3f; 
     public int hammerSmashDamage = 2; 
-    public Transform hammer;  // The hammer 
+    public Transform hammer;  
     public Transform hammerSmashPoint;  
     public ParticleSystem smashEffect;  
     public AudioClip smashSound; 
@@ -20,7 +20,6 @@ public class HeavyEnemyController : EnemyController
 
     private Animator animator; 
     private AudioSource audioSource;  
-
     private bool isFacingRight = true; 
     private PlayerController playerController;
 
@@ -32,10 +31,8 @@ public class HeavyEnemyController : EnemyController
 
     private void Update()
     {
-       
         CheckPlayerInRange();
 
-       
         if (playerInRange && !isSmashing)
         {
             MoveTowardsPlayer();
@@ -48,7 +45,8 @@ public class HeavyEnemyController : EnemyController
         }
         else if (playerInRange && !isSmashing)
         {
-            StartCoroutine(HammerSmash());
+            
+            StartHammerSmash();
         }
     }
 
@@ -59,54 +57,26 @@ public class HeavyEnemyController : EnemyController
         playerInRange = distanceToPlayer <= detectionRange;
     }
 
-   
+    
     private void MoveTowardsPlayer()
     {
-        
         Vector3 direction = (player.position - transform.position).normalized;
-        
-        
         Vector3 horizontalMove = new Vector3(direction.x, 0f, 0f);
+        transform.position += horizontalMove * NewmoveSpeed * Time.deltaTime;
 
-       
-        transform.position += horizontalMove * moveSpeed * Time.deltaTime;
-
-       
         if ((horizontalMove.x > 0 && !isFacingRight) || (horizontalMove.x < 0 && isFacingRight))
         {
             Flip();
         }
 
-       
-        if (animator != null)
-        {
-            animator.SetBool("IsWalking", true);
-        }
+        animator.SetBool("IsWalking", horizontalMove.magnitude > 0.1f);
     }
 
-    
-    private IEnumerator HammerSmash()
+    // Called by the animation event
+    public void HammerSmash()
     {
-        isSmashing = true;
+        Debug.Log("Hammer Smash Triggered!");
 
-       
-        if (animator != null)
-        {
-            animator.SetTrigger("RaiseHammer");
-        }
-
-        yield return new WaitForSeconds(1f);  
-
-        
-        if (animator != null)
-        {
-            animator.SetTrigger("Smash");
-        }
-
-        
-        yield return new WaitForSeconds(0.5f);
-
-        
         if (smashEffect != null)
         {
             Instantiate(smashEffect, hammerSmashPoint.position, Quaternion.identity);
@@ -117,7 +87,7 @@ public class HeavyEnemyController : EnemyController
             audioSource.PlayOneShot(smashSound);
         }
 
-        
+        // Deal damage to player(s) in radius
         Collider2D[] hitColliders = Physics2D.OverlapCircleAll(hammerSmashPoint.position, hammerSmashDamageRadius);
         foreach (Collider2D hitCollider in hitColliders)
         {
@@ -135,15 +105,22 @@ public class HeavyEnemyController : EnemyController
         isSmashing = false;  
     }
 
+   
+    private void StartHammerSmash()
+    {
+        if (!isSmashing)
+        {
+            isSmashing = true;  
+            animator.SetTrigger("IsSlamming");  
+        }
+    }
+
     
     private void Flip()
     {
         isFacingRight = !isFacingRight;
-
-        // Flip the sprite
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
-        // Flip the hammer
         if (hammer != null)
         {
             hammer.localScale = new Vector3(-hammer.localScale.x, hammer.localScale.y, hammer.localScale.z);
@@ -157,16 +134,13 @@ public class HeavyEnemyController : EnemyController
         Gizmos.DrawWireSphere(hammerSmashPoint.position, hammerSmashDamageRadius);
     }
 
-    public override void UseAbility()
-    {
-       
-    }
+    public override void UseAbility() {}
 
     public override void Die()
     {
         if (playerController != null)
         {
-            playerController.GainAbilitiesFromEnemy(this); 
+            playerController.GainAbilitiesFromEnemy(this);
         }
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
