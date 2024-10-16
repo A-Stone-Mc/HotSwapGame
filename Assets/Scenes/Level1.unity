@@ -12761,7 +12761,7 @@ Transform:
   m_GameObject: {fileID: 1033381855}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 46.3, y: -2.05, z: 0}
+  m_LocalPosition: {x: -1.1, y: -2.05, z: 0}
   m_LocalScale: {x: 0.05209902, y: 0.04934982, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -12817,6 +12817,8 @@ MonoBehaviour:
   jumpSound: {fileID: 8300000, guid: 83f637431168a394fbc4584607e67275, type: 3}
   walkSound: {fileID: 8300000, guid: c2c5233a03385384cadf33a4886150e6, type: 3}
   slamSound: {fileID: 8300000, guid: 73c5fda70b6f7c945a9b5deb516279ff, type: 3}
+  swapSound: {fileID: 8300000, guid: e62b1939a97d4af41ad53a0ecb38f219, type: 3}
+  damageSound: {fileID: 8300000, guid: 9994b407af983fe42b3064b01bd385ae, type: 3}
   gasBombPrefab: {fileID: 194639026221669946, guid: 1cda1689ddbfa1c4087fc2c09f39832f, type: 3}
   throwPoint: {fileID: 1657023851}
   arcRenderer: {fileID: 1033381863}

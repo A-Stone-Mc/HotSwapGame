@@ -62,6 +62,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip walkSound;
     public AudioClip slamSound;
+    public AudioClip swapSound;
+    public AudioClip damageSound;
 
     private float walkSoundCooldown = 0.2f;  // Cooldown for walking sound effects
     private float nextWalkSoundTime = 0f;
@@ -349,8 +351,8 @@ public class PlayerController : MonoBehaviour
         // Start charging when the R key is pressed
         if (Input.GetKeyDown(KeyCode.R) && !isChargingJump && !chargeJumpReady)
         {
-            isChargingJump = true; // Begin the charging process
-            chargeJumpTimer = 0f;  // Reset the charge timer
+            isChargingJump = true;
+            chargeJumpTimer = 0f;  
         }
 
         // If the jump is being charged
@@ -412,7 +414,7 @@ public class PlayerController : MonoBehaviour
         Destroy(boomEffectRight, boomDisplayDuration);
         Destroy(boomEffectLeft, boomDisplayDuration);
         
-        // Apply area of effect damage to enemies around the player
+       
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, slamDamageRadius);
 
         foreach (Collider2D collider in colliders)
@@ -507,9 +509,9 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator TempInvulnerability(float duration)
     {
-        isInvulnerable = true;  // Enable invulnerability
-        yield return new WaitForSeconds(duration);  // Wait for the given duration
-        isInvulnerable = false;  // Disable invulnerability
+        isInvulnerable = true;  
+        yield return new WaitForSeconds(duration);  
+        isInvulnerable = false;  
     }
 
     private void ShootLaser()
@@ -561,6 +563,7 @@ public class PlayerController : MonoBehaviour
 
             // Apply knockback
             StartCoroutine(ApplyKnockback());
+            PlaySound(damageSound);
 
             if (currentHealth <= 0)
             {
@@ -700,6 +703,8 @@ public class PlayerController : MonoBehaviour
        
         hasAbilities = true;
         Debug.Log("Player gained abilities from enemy!");
+
+        PlaySound(swapSound);
 
 
     }
