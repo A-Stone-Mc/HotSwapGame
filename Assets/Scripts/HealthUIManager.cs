@@ -48,15 +48,9 @@ public class HealthUIManager : MonoBehaviour
     }
 
     
-    public void Heal(int amount)
+    public void Heal()
     {
-        currentHealth += amount;
-
-        if (currentHealth > maxHealth)
-        {
-            currentHealth = maxHealth;
-        }
-
+        currentHealth = maxHealth;
         
         UpdateHearts();
     }

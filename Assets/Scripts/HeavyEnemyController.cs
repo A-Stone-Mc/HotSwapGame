@@ -138,10 +138,6 @@ public class HeavyEnemyController : EnemyController
 
     public override void Die()
     {
-        if (playerController != null)
-        {
-            playerController.GainAbilitiesFromEnemy(this);
-        }
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
     }

@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class GasCloud : MonoBehaviour
 {
     public int damage = 1; // Damage dealt to the player
     public float damageInterval = 2f; // Time between damage ticks
+    
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -34,7 +36,7 @@ public class GasCloud : MonoBehaviour
         while (true)
         {
             // Deal damage to the player every 2 seconds
-            player.TakeDamage(damage);
+            player.TakeGasDamage(damage);
             yield return new WaitForSeconds(damageInterval);
         }
     }

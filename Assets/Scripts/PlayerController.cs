@@ -339,6 +339,7 @@ public class PlayerController : MonoBehaviour
         canThrowGasBomb = false;
         canChargeJump = false; 
         isGroundSlamming = false;
+        arcRenderer.enabled = false; 
     }
     private void Fly()
     {
@@ -424,7 +425,7 @@ public class PlayerController : MonoBehaviour
                 EnemyController enemyController = collider.GetComponent<EnemyController>();
                 if (enemyController != null)
                 {
-                    enemyController.TakeDamage(3, Vector2.zero); 
+                    enemyController.TakeDamage(4, Vector2.zero); 
                     Debug.Log("Enemy hit by ground slam");
                 }
             }
@@ -561,8 +562,8 @@ public class PlayerController : MonoBehaviour
             currentHealth -= damage;
             damageCooldownTimer = damageCooldown;
 
-            // Apply knockback
             StartCoroutine(ApplyKnockback());
+            
             PlaySound(damageSound);
 
             if (currentHealth <= 0)
@@ -579,9 +580,40 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void TakeGasDamage(int damage)
+    {
+        if (!isInvulnerable && damageCooldownTimer <= 0)
+        {
+            currentHealth -= damage;
+            damageCooldownTimer = damageCooldown;
+
+            // No knockback is applied
+            PlaySound(damageSound);
+
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                StartCoroutine(FlashRed());
+                Debug.Log("Player hit by gas cloud! Current Health: " + currentHealth);
+            }
+
+            healthUIManager.TakeDamage(damage);
+        }
+    }
+
+    public void ResetHealthToMax()
+    {
+        currentHealth = maxHealth;  
+        healthUIManager.Heal(); 
+    }
+
     private IEnumerator ApplyKnockback()
     {
         isKnockedBack = true;  // Disable player movement
+        arcRenderer.enabled = false; 
 
         // Temporarily disable collisions with nearby enemies
         DisableEnemyColliders(true);
