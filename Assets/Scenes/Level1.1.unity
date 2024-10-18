@@ -1749,7 +1749,7 @@ Transform:
   m_GameObject: {fileID: 182754435}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 12.7, y: -4.83, z: 0}
+  m_LocalPosition: {x: 11.2, y: -4.83, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -15337,7 +15337,7 @@ Transform:
   m_GameObject: {fileID: 538647000}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 197.65, y: -0.28, z: -5.36}
+  m_LocalPosition: {x: 197.65, y: -0.68, z: -5.36}
   m_LocalScale: {x: 0.1200433, y: 0.12477942, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -34916,7 +34916,7 @@ Transform:
   m_GameObject: {fileID: 1033381855}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: -2.09, z: 0}
+  m_LocalPosition: {x: 190.9, y: -0.8, z: 0}
   m_LocalScale: {x: 0.05209902, y: 0.04934982, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -37454,7 +37454,7 @@ Transform:
   m_GameObject: {fileID: 1307754442}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 174.67, y: -0.46, z: -5.36}
+  m_LocalPosition: {x: 168.64, y: -0.46, z: -5.36}
   m_LocalScale: {x: 0.1200433, y: 0.12477942, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -67298,7 +67298,7 @@ MonoBehaviour:
   detectionRange: 15
   NewmoveSpeed: 2
   hammerSmashCooldown: 3
-  hammerSmashDamageRadius: 2
+  hammerSmashDamageRadius: 0.5
   hammerSmashDamage: 1
   hammer: {fileID: 1231942396}
   hammerSmashPoint: {fileID: 182754436}
