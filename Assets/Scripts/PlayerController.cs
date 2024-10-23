@@ -596,7 +596,32 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                StartCoroutine(FlashRed());
+                StartCoroutine(FlashGreen());
+                Debug.Log("Player hit by gas cloud! Current Health: " + currentHealth);
+            }
+
+            healthUIManager.TakeDamage(damage);
+        }
+    }
+
+
+        public void TakeFireDamage(int damage)
+    {
+        if (!isInvulnerable && damageCooldownTimer <= 0)
+        {
+            currentHealth -= damage;
+            damageCooldownTimer = damageCooldown;
+
+            // No knockback is applied
+            PlaySound(damageSound);
+
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                StartCoroutine(FlashOrange());
                 Debug.Log("Player hit by gas cloud! Current Health: " + currentHealth);
             }
 
@@ -764,6 +789,32 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
 
         // Change the player's color back 
+        spriteRenderer.color = Color.white;
+    }
+
+
+        private IEnumerator FlashGreen()
+    {
+        
+        spriteRenderer.color = Color.green;
+
+        
+        yield return new WaitForSeconds(0.2f);
+
+        
+        spriteRenderer.color = Color.white;
+    }
+
+
+    private IEnumerator FlashOrange()
+    {
+        
+        spriteRenderer.color = Color.yellow;
+
+        
+        yield return new WaitForSeconds(0.2f);
+
+        
         spriteRenderer.color = Color.white;
     }
 
