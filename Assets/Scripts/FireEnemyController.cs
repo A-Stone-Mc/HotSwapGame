@@ -11,22 +11,22 @@ public class FireEnemyController : EnemyController
     public Vector3 deathEffectOffset = new Vector3(0, 0.5f, 0); 
     public Transform pointA; // Patrol point A
     public Transform pointB; // Patrol point B
-    public Transform firePoint; // The point where the fire is shot from
-    public float detectionRange = 8f; // Detection range for the player
-    public float fireDuration = 5f; // Duration for which fire is shot
-    public float fireCooldown = 3f; // Cooldown between fire attacks
+    public Transform firePoint;
+    public float detectionRange = 8f; 
+    public float fireDuration = 5f; 
+    public float fireCooldown = 3f; 
     public float fireDamageInterval = 2f;
-    public float fireDamageRadius = 2f; // Interval at which the fire damages the player
+    public float fireDamageRadius = 2f;
 
     private bool playerInRange = false;
     private bool isFiring = false;
     private float fireCooldownTimer = 0f;
     private Animator animator;
     private bool isFacingRight = true;
-    public GameObject rightFireStreamPrefab; // The right-facing fire particle system prefab
+    public GameObject rightFireStreamPrefab;
     public GameObject leftFireStreamPrefab;
 
-    public Transform player; // Reference to the player
+    public Transform player; 
     private Vector3 targetPosition;
 
     private PlayerController playerController;
@@ -35,7 +35,7 @@ public class FireEnemyController : EnemyController
     private void Start()
     {
         animator = GetComponent<Animator>();
-        targetPosition = pointB.position;  // Initialize to the second patrol point
+        targetPosition = pointB.position; 
     }
 
     private void Update()
@@ -43,7 +43,7 @@ public class FireEnemyController : EnemyController
         Patrol();
         CheckPlayerInRange();
 
-        // Handle fire cooldown
+       
         if (fireCooldownTimer > 0)
         {
             fireCooldownTimer -= Time.deltaTime;
@@ -51,14 +51,14 @@ public class FireEnemyController : EnemyController
 
         if (playerInRange && fireCooldownTimer <= 0 && !isFiring)
         {
-            // Trigger fire animation if player is in range and cooldown has passed
+           
             animator.SetTrigger("IsFiring");
         }
 
-        UpdateAnimations(); // Update the animations based on movement and firing
+        UpdateAnimations(); 
     }
 
-    // Patrol between two points
+   
     private void Patrol()
     {
         if (!playerInRange && !isFiring)
@@ -66,7 +66,7 @@ public class FireEnemyController : EnemyController
             float step = moveSpeed * Time.deltaTime;
             transform.position = Vector3.MoveTowards(transform.position, targetPosition, step);
 
-            // Check if the enemy reached the patrol point
+            
             if (Vector3.Distance(transform.position, targetPosition) < 0.1f)
             {
                 targetPosition = (targetPosition == pointA.position) ? pointB.position : pointA.position;
@@ -75,7 +75,6 @@ public class FireEnemyController : EnemyController
         }
     }
 
-    // Check if the player is in range
     private void CheckPlayerInRange()
     {
         float distanceToPlayer = Vector2.Distance(transform.position, player.position);
@@ -87,7 +86,7 @@ public class FireEnemyController : EnemyController
         }
     }
 
-    // Face the player by flipping sprite
+    
     private void FacePlayer(Transform player)
     {
         Vector3 direction = player.position - transform.position;
@@ -101,12 +100,12 @@ public class FireEnemyController : EnemyController
         }
     }
 
-    // Coroutine to handle shooting fire and its cooldown
+    
     private IEnumerator ShootFire()
     {
         isFiring = true;
 
-        // Instantiate the appropriate fire stream based on the direction the enemy is facing
+        
         if (isFacingRight)
         {
             activeFireStream = Instantiate(rightFireStreamPrefab, firePoint.position, firePoint.rotation);
@@ -120,19 +119,19 @@ public class FireEnemyController : EnemyController
 
         yield return new WaitForSeconds(fireDuration);
 
-        // Stop the fire particle system and destroy it
+       
         Destroy(activeFireStream);
 
-        fireCooldownTimer = fireCooldown;  // Start cooldown
+        fireCooldownTimer = fireCooldown;  
         isFiring = false;
     }
 
-    // Apply damage to player every few seconds while firing
+    
     private IEnumerator DamagePlayerOverTime()
     {
         while (isFiring)
         {
-            // Check if the player is within the fire's damage radius and in the correct direction
+           
             Collider2D[] hitColliders = Physics2D.OverlapCircleAll(firePoint.position, fireDamageRadius);
             foreach (Collider2D hitCollider in hitColliders)
             {
@@ -152,33 +151,33 @@ public class FireEnemyController : EnemyController
                 }
             }
 
-            yield return new WaitForSeconds(fireDamageInterval);  // Wait before dealing damage again
+            yield return new WaitForSeconds(fireDamageInterval);  
         }
     }
 
-    // Animation event to call this method at the appropriate time in the animation
+    
     public void OnFireAnimationEvent()
     {
         StartCoroutine(ShootFire());
     }
 
-    // Update animations for patrol, idle, and firing states
+   
     private void UpdateAnimations()
     {
-        // If the enemy is firing, no need to check other animations
+       
         if (isFiring) return;
 
-        // Play walking animation if moving, otherwise play idle
+        
         bool isWalking = Vector3.Distance(transform.position, targetPosition) > 0.1f;
         animator.SetBool("IsWalking", isWalking);
     }
 
-    // Flip the enemy and fire stream direction
+    
     private void Flip()
     {
         isFacingRight = !isFacingRight;
 
-        // Flip the enemy sprite
+        
         transform.localScale = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
     }
 
@@ -187,6 +186,7 @@ public class FireEnemyController : EnemyController
 
     public override void Die()
     {
+        Destroy(activeFireStream);
         if (playerController != null)
         {
             playerController.GainAbilitiesFromEnemy(this);

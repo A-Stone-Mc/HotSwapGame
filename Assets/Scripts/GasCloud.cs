@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class GasCloud : MonoBehaviour
 {
-    public int damage = 1; // Damage dealt to the player
-    public float damageInterval = 2f; // Time between damage ticks
+    public int damage = 1; 
+    public float damageInterval = 2f; 
     
 
     private void OnTriggerEnter2D(Collider2D other)
