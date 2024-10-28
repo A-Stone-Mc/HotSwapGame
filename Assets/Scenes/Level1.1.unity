@@ -12690,6 +12690,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.2
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1960133284}
   pointB: {fileID: 1978361665}
   throwPoint: {fileID: 1462753718}
@@ -30652,6 +30656,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.1
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1774747933}
   pointB: {fileID: 702050948}
   laserBeamPrefab: {fileID: 4081394090707935040, guid: ff3410166c9531049af5e06292e78195, type: 3}
@@ -31596,6 +31604,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.1
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1834576178}
   pointB: {fileID: 1525182328}
   laserBeamPrefab: {fileID: 4081394090707935040, guid: ff3410166c9531049af5e06292e78195, type: 3}
@@ -59991,6 +60003,11 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.2
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  burstEffectPrefab: {fileID: 0}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1520814811}
   pointB: {fileID: 283444630}
   bobbingAmplitude: 0.5
@@ -62804,6 +62821,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.1
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1366714387}
   pointB: {fileID: 1260513802}
   laserBeamPrefab: {fileID: 4081394090707935040, guid: ff3410166c9531049af5e06292e78195, type: 3}
@@ -63287,7 +63308,7 @@ Transform:
   m_GameObject: {fileID: 1033381855}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.02, y: 0.9, z: 0}
+  m_LocalPosition: {x: 212.2, y: 0.9, z: 0}
   m_LocalScale: {x: 0.05209902, y: 0.04934982, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -63319,6 +63340,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 128
   rotationDuration: 0.5
+  abilityGainEffectPrefab: {fileID: 4579991392583394570, guid: ef4f32d428711354fa678b7e05a25e41, type: 3}
+  effectDuration: 1
+  abilityEffectScale: {x: 1, y: 1, z: 1}
+  abilityEffectOffset: {x: 0, y: 0.5, z: 0}
   lightningBoltPrefab: {fileID: 869148515910086783, guid: 11c6fe2213b47c74cb9eda3fe5e89923, type: 3}
   dropPoint: {fileID: 1643661763}
   damageCooldown: 0.01
@@ -66601,6 +66626,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.2
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 458951075}
   pointB: {fileID: 1314209097}
   throwPoint: {fileID: 737957031}
@@ -67783,7 +67812,7 @@ Transform:
   m_GameObject: {fileID: 1144497674}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 17.43, y: -1.4, z: 0}
+  m_LocalPosition: {x: 13.32, y: -1.4, z: 0}
   m_LocalScale: {x: 0.109992, y: 0.11142, z: 0.12}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -67810,7 +67839,11 @@ MonoBehaviour:
   moveSpeed: 4
   knockbackForce: 5
   knockbackDuration: 0.2
-  damageCooldown: 1
+  damageCooldown: 0.01
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 913619134}
   pointB: {fileID: 338205343}
   firePoint: {fileID: 655652959}
@@ -74135,6 +74168,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.1
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1163122761}
   pointB: {fileID: 1134513214}
   laserBeamPrefab: {fileID: 4081394090707935040, guid: ff3410166c9531049af5e06292e78195, type: 3}
@@ -88070,6 +88107,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.1
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1722857335}
   pointB: {fileID: 1251686705}
   laserBeamPrefab: {fileID: 4081394090707935040, guid: ff3410166c9531049af5e06292e78195, type: 3}
@@ -99535,6 +99576,11 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.2
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  burstEffectPrefab: {fileID: 0}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 167873094}
   pointB: {fileID: 1166769949}
   bobbingAmplitude: 0.5
@@ -109339,6 +109385,11 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.2
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  burstEffectPrefab: {fileID: 6072397032088363436, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 8180704439292254428}
   pointB: {fileID: 1587839031}
   bobbingAmplitude: 0.5
@@ -116350,7 +116401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cdTimer: {fileID: 833024015}
   newTimeRemaining: 25
-  health: 6
+  health: 7
   moveSpeed: 2
   knockbackForce: 5
   knockbackDuration: 0.2
@@ -122860,98 +122911,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!1 &1857210484
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1857210487}
-  - component: {fileID: 1857210486}
-  - component: {fileID: 1857210485}
-  m_Layer: 0
-  m_Name: EndLevelTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1857210485
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1857210484}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fee7121ee41f7a84d8fdb08fdacffa5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  levelTimer: {fileID: 602207969}
-  countdownTimer: {fileID: 833024015}
---- !u!61 &1857210486
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1857210484}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0.28146267, y: 1.4868579}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1.5629253, y: 5.1729918}
-  m_EdgeRadius: 0
---- !u!4 &1857210487
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1857210484}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 244, y: -0.7, z: 1.6148486}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1859508357
 GameObject:
   m_ObjectHideFlags: 0
@@ -129837,6 +129796,10 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.1
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 460532104}
   pointB: {fileID: 1779493014}
   laserBeamPrefab: {fileID: 4081394090707935040, guid: ff3410166c9531049af5e06292e78195, type: 3}
@@ -130312,6 +130275,11 @@ MonoBehaviour:
   knockbackForce: 5
   knockbackDuration: 0.2
   damageCooldown: 0.2
+  deathEffectPrefab: {fileID: 1813197431956478084, guid: f0d6e769928f8e74d9f43bd1618b90cf, type: 3}
+  burstEffectPrefab: {fileID: 0}
+  effectDuration: 1
+  deathEffectScale: {x: 0.1, y: 0.1, z: 0.1}
+  deathEffectOffset: {x: 0, y: 0.5, z: 0}
   pointA: {fileID: 1028265247}
   pointB: {fileID: 320487169}
   bobbingAmplitude: 0.5
@@ -143189,6 +143157,63 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 630b123aa88562a44916301dac5b6e94, type: 3}
+--- !u!1001 &3761773603926247960
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 103.792564
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.3891807
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.31300005
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1220059146280925851, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6072397032088363436, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
+      propertyPath: m_Name
+      value: DeathEffect
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c87eaf5e903eb2d4b91c50d71b0bd013, type: 3}
 --- !u!95 &6826678369684040575
 Animator:
   serializedVersion: 5
@@ -143210,6 +143235,75 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1001 &7259318475532284890
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 239.51
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1835916545520867912, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2229232708932513837, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: player
+      value: 
+      objectReference: {fileID: 1033381855}
+    - target: {fileID: 2229232708932513837, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: levelTimer
+      value: 
+      objectReference: {fileID: 602207969}
+    - target: {fileID: 2229232708932513837, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: countdownTimer
+      value: 
+      objectReference: {fileID: 833024015}
+    - target: {fileID: 6904757594753020365, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
+      propertyPath: m_Name
+      value: EndOfLevel
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ca8e349f392b9254dbe3f4ac4135c4a8, type: 3}
 --- !u!4 &8180704439292254428 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1997554902869706864, guid: 630b123aa88562a44916301dac5b6e94, type: 3}
@@ -143334,7 +143428,6 @@ SceneRoots:
   - {fileID: 96517189}
   - {fileID: 1206614017}
   - {fileID: 602207970}
-  - {fileID: 1857210487}
   - {fileID: 1896825430}
   - {fileID: 553886987}
   - {fileID: 1015314061}
@@ -143372,3 +143465,5 @@ SceneRoots:
   - {fileID: 1771024691}
   - {fileID: 1218249694}
   - {fileID: 1144497681}
+  - {fileID: 3761773603926247960}
+  - {fileID: 7259318475532284890}

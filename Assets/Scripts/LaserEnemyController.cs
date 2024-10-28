@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class LaserEnemyController : EnemyController
 {
+    public GameObject deathEffectPrefab; 
+    public float effectDuration = 1f;    
+    public Vector3 deathEffectScale = new Vector3(0.1f, 0.1f, 0.1f); 
+    public Vector3 deathEffectOffset = new Vector3(0, 0.5f, 0); 
     public Transform pointA; // Patrol point A
     public Transform pointB; // Patrol point B
     public GameObject laserBeamPrefab; // The laser beam prefab
@@ -193,9 +197,27 @@ public class LaserEnemyController : EnemyController
             Debug.Log("Player is gaining laser abilities");
             playerController.GainAbilitiesFromEnemy(this);  
         }
+        
+        SpawnDeathEffect();
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
 
     }
+
+
+    private void SpawnDeathEffect()
+    {
+        
+        GameObject effect = Instantiate(deathEffectPrefab, transform.position + deathEffectOffset, Quaternion.identity);
+
+       
+        effect.transform.localScale = deathEffectScale; 
+
+        Debug.Log("Death effect instantiated and positioned over the enemy.");
+
+        
+        Destroy(effect, effectDuration);
+    }
+
 
 }

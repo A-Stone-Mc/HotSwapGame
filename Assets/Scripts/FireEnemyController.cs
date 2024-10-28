@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class FireEnemyController : EnemyController
 {
+
+    public GameObject deathEffectPrefab; 
+    public float effectDuration = 1f;    
+    public Vector3 deathEffectScale = new Vector3(0.1f, 0.1f, 0.1f); 
+    public Vector3 deathEffectOffset = new Vector3(0, 0.5f, 0); 
     public Transform pointA; // Patrol point A
     public Transform pointB; // Patrol point B
     public Transform firePoint; // The point where the fire is shot from
@@ -186,6 +191,8 @@ public class FireEnemyController : EnemyController
         {
             playerController.GainAbilitiesFromEnemy(this);
         }
+
+        SpawnDeathEffect();
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
     }
@@ -195,4 +202,19 @@ public class FireEnemyController : EnemyController
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(firePoint.position, fireDamageRadius);
     }
+
+    private void SpawnDeathEffect()
+    {
+        
+        GameObject effect = Instantiate(deathEffectPrefab, transform.position + deathEffectOffset, Quaternion.identity);
+
+       
+        effect.transform.localScale = deathEffectScale; 
+
+        Debug.Log("Death effect instantiated and positioned over the enemy.");
+
+        
+        Destroy(effect, effectDuration);
+    }
+
 }

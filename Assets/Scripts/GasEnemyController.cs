@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class GasEnemyController : EnemyController
 {
+     public GameObject deathEffectPrefab; 
+    public float effectDuration = 1f;    
+    public Vector3 deathEffectScale = new Vector3(0.1f, 0.1f, 0.1f); 
+    public Vector3 deathEffectOffset = new Vector3(0, 0.5f, 0); 
     public Transform pointA;
     public Transform pointB; 
     public Transform throwPoint; 
@@ -161,7 +165,24 @@ public class GasEnemyController : EnemyController
         {
             playerController.GainAbilitiesFromEnemy(this); 
         }
+
+        SpawnDeathEffect();
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
+    }
+
+
+    private void SpawnDeathEffect()
+    {
+        
+        GameObject effect = Instantiate(deathEffectPrefab, transform.position + deathEffectOffset, Quaternion.identity);
+
+       
+        effect.transform.localScale = deathEffectScale; 
+
+        Debug.Log("Death effect instantiated and positioned over the enemy.");
+
+        
+        Destroy(effect, effectDuration);
     }
 }

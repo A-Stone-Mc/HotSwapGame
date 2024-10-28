@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class FlyingEnemyController : EnemyController
 {
+    public GameObject deathEffectPrefab; 
+    public GameObject burstEffectPrefab;
+    public float effectDuration = 1f;    
+    public Vector3 deathEffectScale = new Vector3(0.1f, 0.1f, 0.1f); 
+    public Vector3 deathEffectOffset = new Vector3(0, 0.5f, 0); 
     public Transform pointA; // The left point 
     public Transform pointB; // The right point 
     public float bobbingAmplitude = 0.5f; // The height of the bobbing 
@@ -126,11 +131,43 @@ public class FlyingEnemyController : EnemyController
         {
             Debug.LogError("PlayerController is null in EnemyController.");
         }
+
+        SpawnDeathEffect();
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
 
     }
 
+    private void SpawnBurstEffect()
+    {
+        if (burstEffectPrefab != null)
+        {
+            
+            Instantiate(burstEffectPrefab, transform.position + deathEffectOffset, Quaternion.identity);
+
+            
+        }
+        else
+        {
+            Debug.LogWarning("No prefavb found");
+        }
+    }
+
+    private void SpawnDeathEffect()
+    {
+        
+        GameObject effect = Instantiate(deathEffectPrefab, transform.position + deathEffectOffset, Quaternion.identity);
+
+       
+        effect.transform.localScale = deathEffectScale; 
+
+        Debug.Log("Death effect instantiated and positioned over the enemy.");
+
+        
+        Destroy(effect, effectDuration);
+    }
+
+    
 
 
 }

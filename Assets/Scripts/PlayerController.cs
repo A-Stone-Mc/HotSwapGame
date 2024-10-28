@@ -11,6 +11,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private float rotationDuration = 0.5f; 
+    public GameObject abilityGainEffectPrefab; 
+    public float effectDuration = 1.0f;
+    public Vector3 abilityEffectScale = new Vector3(1.5f, 1.5f, 1.5f); 
+    public Vector3 abilityEffectOffset = new Vector3(0, 0.5f, 0);
     public GameObject lightningBoltPrefab; // Prefab for player lightingn
      public Transform dropPoint; 
     public float damageCooldown = 1f;  // Cooldown time between damage
@@ -612,7 +616,7 @@ public class PlayerController : MonoBehaviour
             currentHealth -= damage;
             damageCooldownTimer = damageCooldown;
 
-            // No knockback is applied
+            StartCoroutine(ApplyFireKnockback());
             PlaySound(damageSound);
 
             if (currentHealth <= 0)
@@ -651,6 +655,25 @@ public class PlayerController : MonoBehaviour
         isKnockedBack = false;  // Re-enable player movement
 
         // Re-enable collisions with nearby enemies
+        DisableEnemyColliders(false);
+    }
+
+        private IEnumerator ApplyFireKnockback()
+    {
+        isKnockedBack = true; 
+        arcRenderer.enabled = false; 
+
+        
+        DisableEnemyColliders(true);
+
+        Vector2 knockbackDirection = -lastMovementDirection.normalized;  
+        body.velocity = new Vector2(knockbackDirection.x * knockbackForce, 2.0f);  
+
+        yield return new WaitForSeconds(knockbackDuration);  
+
+        isKnockedBack = false;  
+
+       
         DisableEnemyColliders(false);
     }
 
@@ -763,7 +786,32 @@ public class PlayerController : MonoBehaviour
 
         PlaySound(swapSound);
 
+        StartCoroutine(SpawnAbilityGainEffect());
+    }
 
+
+    private IEnumerator SpawnAbilityGainEffect()
+    {
+       
+        GameObject effect = Instantiate(abilityGainEffectPrefab, transform.position, Quaternion.identity);
+
+        
+        effect.transform.SetParent(transform);
+
+        
+        effect.transform.localScale = abilityEffectScale; 
+        
+       
+        effect.transform.localPosition = abilityEffectOffset; 
+
+        Debug.Log("Effect instantiated, scaled, and positioned over the player.");
+
+        
+        yield return new WaitForSeconds(effectDuration);
+
+        
+        Destroy(effect);
+        Debug.Log("Effect destroyed after duration.");
     }
 
     private void GainGasAbilities()

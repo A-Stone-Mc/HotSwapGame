@@ -57,7 +57,7 @@ public class LevelCounter : MonoBehaviour
         }
         else
         {
-            fuelStatusText.text = "Oh no, you didn't collect enough fuel for your tank!";
+            fuelStatusText.text = "Oh no, you didn't collect enough fuel for your tank to reach the next area!";
             continueButton.gameObject.SetActive(false);
         }
 
