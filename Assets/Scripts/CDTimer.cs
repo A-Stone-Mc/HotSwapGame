@@ -8,7 +8,7 @@ public class CDTimer : MonoBehaviour
 {
     public float timeRemaining = 10f;
     public TMP_Text timerText;
-    public bool isCountdownActive = true;
+    public bool isCountdownActive = false;
 
     void Update()
     {

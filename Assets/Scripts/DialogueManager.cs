@@ -5,19 +5,19 @@ using UnityEngine.UI;
 
 public class DialogueManager : MonoBehaviour
 {
-    [SerializeField]
-    [Tooltip("Check this box to show the tutorial when the level starts.")]
-    private bool showTutorial = true;
-
-    [Header("UI Elements")]
-    public GameObject tutorialPanel;       // Panel containing all the tutorial UI
     public TMP_Text dialogueText;
-    public GameObject professorSprite;
-    public GameObject lobeSprite;
-    public float typewriterSpeed = 0.05f; // Speed of typewriter effect
+    public GameObject dialoguePanel;
+    public Image animatedCharacter;
+    public Sprite professorSprite;
+    public Sprite lobeSprite;
+    public GameObject fuelUIArrow;
+    public GameObject timerUIArrow;
+    public GameObject healthUIArrow;
+    public GameObject fuelCircleHighlight;
+    
+    public bool alwaysShowTutorial;
 
-    [Header("Dialogue")]
-    private string[] tutorialDialogues = {
+    private string[] dialogues = {
         "Ah, you're awake! L.O.B.E., can you hear me?",
         "...",
         "There's no time to delve into all the details, but an experiment went terribly wrong. I’m talking to you telepathically on this BlueBrain device. Your consciousness was separated from your body and your only safe haven is the protective tank I made for you.",
@@ -41,35 +41,35 @@ public class DialogueManager : MonoBehaviour
         "Stay sharp, L.O.B.E. The path ahead won't be easy, but I have faith in you."
     };
 
-    private int dialogueIndex = 0;
+    private int currentLine = 0;
     private bool isTyping = false;
+    private Coroutine typingCoroutine;
 
     private void Start()
     {
-        if (showTutorial)
+        if (!alwaysShowTutorial && PlayerPrefs.GetInt("TutorialCompleted", 0) == 1)
         {
-            StartTutorial();
+            dialoguePanel.SetActive(false);
+            return;
         }
-        else
-        {
-            tutorialPanel.SetActive(false); // Hide tutorial UI if the tutorial is off
-        }
+        
+        ShowDialogue(); // Start tutorial if not completed
     }
 
-    private void StartTutorial()
+    private void Update()
     {
-        tutorialPanel.SetActive(true); // Show the entire tutorial panel at the start
-        dialogueIndex = 0;
-        DisplayNextLine();
+        if (Input.GetKeyDown(KeyCode.Space) && !isTyping)
+        {
+            DisplayNextLine();
+        }
     }
 
     private void DisplayNextLine()
     {
-        if (dialogueIndex < tutorialDialogues.Length)
+        currentLine++;
+        if (currentLine < dialogues.Length)
         {
-            StartCoroutine(TypeSentence(tutorialDialogues[dialogueIndex]));
-            UpdateCharacterSprites(); // Updates the displayed character
-            dialogueIndex++;
+            ShowDialogue();
         }
         else
         {
@@ -77,46 +77,70 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void ShowDialogue()
     {
-        if (showTutorial && Input.GetKeyDown(KeyCode.Space) && !isTyping)
+        string line = dialogues[currentLine];
+        CheckForUIHighlight(line);
+
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        typingCoroutine = StartCoroutine(TypeText(line));
+
+        SetSpeakerSprite(line);
+    }
+
+    private void CheckForUIHighlight(string line)
+    {
+        fuelUIArrow.SetActive(false);
+        timerUIArrow.SetActive(false);
+        healthUIArrow.SetActive(false);
+        fuelCircleHighlight.SetActive(false);
+
+        if (line.Contains("fuel level"))
         {
-            DisplayNextLine();
+            fuelUIArrow.SetActive(true);
+        }
+        else if (line.Contains("fuel cells"))
+        {
+            fuelCircleHighlight.SetActive(true);
+        }
+        else if (line.Contains("time for your survival"))
+        {
+            timerUIArrow.SetActive(true);
+        }
+        else if (line.Contains("only take so many hits"))
+        {
+            healthUIArrow.SetActive(true);
         }
     }
 
-    private IEnumerator TypeSentence(string sentence)
+    private IEnumerator TypeText(string line)
     {
         isTyping = true;
         dialogueText.text = "";
-        
-        foreach (char letter in sentence.ToCharArray())
+        foreach (char letter in line)
         {
             dialogueText.text += letter;
-            yield return new WaitForSeconds(typewriterSpeed);
+            yield return new WaitForSeconds(0.05f); // Typewriter speed
         }
-
         isTyping = false;
+    }
+
+    private void SetSpeakerSprite(string line)
+    {
+        if (line.StartsWith("Professor Cortex"))
+        {
+            animatedCharacter.sprite = professorSprite;
+        }
+        else if (line.StartsWith("L.O.B.E."))
+        {
+            animatedCharacter.sprite = lobeSprite;
+        }
     }
 
     private void EndTutorial()
     {
-        dialogueText.text = ""; // Clear text at the end
-        tutorialPanel.SetActive(false); // Hide the tutorial panel when finished
-    }
-
-    private void UpdateCharacterSprites()
-    {
-        // Example logic to switch sprites between the professor and L.O.B.E.
-        if (dialogueIndex % 2 == 0) // Even index for professor, odd index for L.O.B.E.
-        {
-            professorSprite.SetActive(true);
-            lobeSprite.SetActive(false);
-        }
-        else
-        {
-            professorSprite.SetActive(false);
-            lobeSprite.SetActive(true);
-        }
+        dialoguePanel.SetActive(false);
+        PlayerPrefs.SetInt("TutorialCompleted", 1); // Save tutorial completion status
+        FindObjectOfType<CDTimer>().isCountdownActive = true;
     }
 }
