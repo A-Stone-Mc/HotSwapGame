@@ -31,6 +31,7 @@ public class FireEnemyController : EnemyController
 
     private PlayerController playerController;
     private GameObject activeFireStream;
+    
 
     private void Start()
     {
@@ -54,8 +55,25 @@ public class FireEnemyController : EnemyController
            
             animator.SetTrigger("IsFiring");
         }
-
+        UpdatePlayerReference();
         UpdateAnimations(); 
+    }
+
+
+        private void UpdatePlayerReference()
+    {
+        if (playerController == null)
+        {
+            playerController = GameObject.FindGameObjectWithTag("Player")?.GetComponent<PlayerController>();
+            if (playerController != null)
+            {
+                Debug.Log("PlayerController found and set.");
+            }
+            else
+            {
+                Debug.LogError("PlayerController is still null. Check if the Player has the 'Player' tag.");
+            }
+        }
     }
 
    
@@ -182,15 +200,22 @@ public class FireEnemyController : EnemyController
     }
 
 
-    public override void UseAbility() {}
+    public override void UseAbility() 
+    {
+        
+    }
 
     public override void Die()
     {
-        Destroy(activeFireStream);
+       
         if (playerController != null)
         {
-            playerController.GainAbilitiesFromEnemy(this);
+            Debug.Log("Player is gaining fire abilities");
+            playerController.GainAbilitiesFromEnemy(this);  
         }
+        
+
+        Destroy(activeFireStream);
 
         SpawnDeathEffect();
         cdTimer.timeRemaining = newTimeRemaining;

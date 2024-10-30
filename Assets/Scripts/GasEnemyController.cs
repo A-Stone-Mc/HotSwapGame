@@ -180,7 +180,7 @@ public class GasEnemyController : EnemyController
        
         effect.transform.localScale = deathEffectScale; 
 
-        Debug.Log("Death effect instantiated and positioned over the enemy.");
+        Debug.Log("Death effect instantiated and positioned over the enemy");
 
         
         Destroy(effect, effectDuration);

@@ -46,10 +46,14 @@ public class PlayerController : MonoBehaviour
     public Vector3 newFlyingScale; //scale of flying enemy sprite
     [Tooltip("Scale of Laser Enemy Type")]
     public Vector3 newLaserScale;
+
+    public Vector3 newFireScale;
     public LayerMask platformLayer;  // Reference to the platform layer
 
     public Sprite flyingTypeSprite; 
     public Sprite laserTypeSprite;
+
+    public Sprite fireTypeSprite;
     private SpriteRenderer spriteRenderer;
     private bool canShootLaser = false; 
     public float knockbackForce = 10f;  // Force of knockback
@@ -108,6 +112,17 @@ public class PlayerController : MonoBehaviour
     public float boomDisplayDuration = 1f;
     public float boomHeightOffset = -1.5f;
     public HealthUIManager healthUIManager;
+
+    public GameObject fireStreamRightPrefab;  
+    public GameObject fireStreamLeftPrefab;   
+    private GameObject activeFireStream;     
+    public float fireDuration = 5f;           
+    public float fireCooldown = 1f;          
+    private float fireDurationTimer;
+    private float fireCooldownTimer;
+    private bool canSprayFire = false;
+    public Transform fireOriginPoint;
+    [SerializeField] private float fireDamageRadius = 1.64f;
     private void Awake()
     {
         //Grab references for rigidbody and animator from object
@@ -264,6 +279,51 @@ public class PlayerController : MonoBehaviour
                     }
                 }
             }
+
+            
+
+        if (canSprayFire)
+        {
+            fireCooldownTimer -= Time.deltaTime;
+
+            if (Input.GetKey(KeyCode.E) && fireDurationTimer > 0)
+            {
+                
+                if (activeFireStream == null)
+                {
+                    Vector3 firePosition = fireOriginPoint.position;
+
+                    
+                    activeFireStream = Instantiate(
+                        transform.localScale.x > 0 ? fireStreamRightPrefab : fireStreamLeftPrefab,
+                        firePosition,
+                        Quaternion.identity
+                    );
+                    activeFireStream.transform.localScale = new Vector3(transform.localScale.x, 1, 1);  
+                    activeFireStream.transform.parent = transform;  
+                }
+
+               
+                fireDurationTimer -= Time.deltaTime;
+
+                
+                if (fireCooldownTimer <= 0)
+                {
+                    DamageEnemiesInFireRange();
+                    fireCooldownTimer = fireCooldown;
+                }
+            }
+            else if (activeFireStream != null)
+            {
+                Destroy(activeFireStream);  
+            }
+        }
+
+        
+        if (fireDurationTimer <= 0 && activeFireStream != null)
+        {
+            Destroy(activeFireStream);
+        }
         
 
             //Set animation
@@ -344,6 +404,8 @@ public class PlayerController : MonoBehaviour
         canChargeJump = false; 
         isGroundSlamming = false;
         arcRenderer.enabled = false; 
+        canSprayFire = false;
+        Destroy(activeFireStream);
     }
     private void Fly()
     {
@@ -556,6 +618,38 @@ public class PlayerController : MonoBehaviour
         canShootLaser = true;  // Enable shooting laser ability
         Debug.Log("Player gained laser shooting abilities.");
         jumpPower = 16f;
+    }
+
+
+    public void GainFireAbilities()
+    {
+        ResetAbilities(); 
+
+        spriteRenderer.sprite = fireTypeSprite;  
+        transform.localScale = newFireScale;     
+
+        boxCollider.size = new Vector2(13.62164f, 17.38288f); //collider size
+        boxCollider.offset = new Vector2(-0.2188742f, -1.548562f);
+
+        canSprayFire = true;
+        fireDurationTimer = fireDuration; 
+        Debug.Log("Player gained fire-spraying abilities.");
+    }
+
+    private void DamageEnemiesInFireRange()
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(fireOriginPoint.position, fireDamageRadius); 
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            if (enemy.CompareTag("Enemy"))
+            {
+                EnemyController enemyController = enemy.GetComponent<EnemyController>();
+                if (enemyController != null)
+                {
+                    enemyController.TakeDamage(1, Vector2.zero);
+                }
+            }
+        }
     }
 
     public void TakeDamage(int damage)
@@ -780,9 +874,14 @@ public class PlayerController : MonoBehaviour
         {
             GainGasAbilities(); 
         }
+        else if (enemy is FireEnemyController)
+        {
+            GainFireAbilities();
+            Debug.Log("Fire abilities gained.");
+        }
        
         hasAbilities = true;
-        Debug.Log("Player gained abilities from enemy!");
+        Debug.Log("Player gained abilities from enemy");
 
         PlaySound(swapSound);
 
@@ -864,6 +963,16 @@ public class PlayerController : MonoBehaviour
 
         
         spriteRenderer.color = Color.white;
+    }
+
+
+    private void OnDrawGizmosSelected()
+    {
+        if (fireOriginPoint != null)
+        {
+            Gizmos.color = Color.red; 
+            Gizmos.DrawWireSphere(fireOriginPoint.position, fireDamageRadius);  
+        }
     }
 
     private IEnumerator DropThroughPlatform()
