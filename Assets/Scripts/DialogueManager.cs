@@ -49,6 +49,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (!alwaysShowTutorial && PlayerPrefs.GetInt("TutorialCompleted", 0) == 1)
         {
+             FindObjectOfType<CDTimer>().isCountdownActive = true;
             dialoguePanel.SetActive(false);
             return;
         }
@@ -58,7 +59,7 @@ public class DialogueManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !isTyping)
+        if (Input.GetKeyDown(KeyCode.Return) && !isTyping)
         {
             DisplayNextLine();
         }
