@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class MainMenuButtons : MonoBehaviour
 {
     [SerializeField] private GameObject levelSelectPanel;
+    [SerializeField] private GameObject mainMenuPanel;
 
     public void StartGame()
     {
@@ -15,6 +16,13 @@ public class MainMenuButtons : MonoBehaviour
     public void OpenLevelSelect()
     {
         levelSelectPanel.SetActive(true);
+        mainMenuPanel.SetActive(false); 
+    }
+
+    public void GoBackToMainMenu()
+    {
+        levelSelectPanel.SetActive(false); 
+        mainMenuPanel.SetActive(true); 
     }
 
     public void LoadLevel(int levelNumber)

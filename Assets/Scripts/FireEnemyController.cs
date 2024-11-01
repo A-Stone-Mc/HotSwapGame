@@ -218,7 +218,15 @@ public class FireEnemyController : EnemyController
         Destroy(activeFireStream);
 
         SpawnDeathEffect();
-        cdTimer.timeRemaining = newTimeRemaining;
+        bool isLiteMode = PlayerPrefs.GetString("Difficulty") == "Lite";
+        if (isLiteMode)
+        {
+            cdTimer.timeRemaining = newTimeRemaining + 5f; // Adds 5 extra seconds
+        }
+        else
+        {
+            cdTimer.timeRemaining = newTimeRemaining; // Normal time
+        }
         gameObject.SetActive(false);
     }
 
