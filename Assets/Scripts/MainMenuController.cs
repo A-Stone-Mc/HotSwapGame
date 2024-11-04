@@ -7,6 +7,7 @@ public class MainMenuController : MonoBehaviour
     private Animator animator;
     private bool hasPlayedOnce = false;
     private bool exitTriggered = false;
+    [SerializeField] private AudioSource buttonPressSound;
 
     [SerializeField]
     private GameObject nextScreenPanel; 
@@ -31,6 +32,11 @@ public class MainMenuController : MonoBehaviour
        
         if (Input.GetKeyDown(KeyCode.Space) && !exitTriggered)
         {
+            if (buttonPressSound != null)
+            {
+                buttonPressSound.Play(); 
+            }
+
             animator.SetTrigger("Exit");
             exitTriggered = true;
             Invoke("LoadNextScreen", 2.2f); 
