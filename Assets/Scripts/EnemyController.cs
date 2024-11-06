@@ -13,11 +13,12 @@ public abstract class EnemyController : MonoBehaviour
     public float knockbackForce = 5f; 
     public float knockbackDuration = 0.2f; 
     private bool isKnockedBack = false; 
-    private SpriteRenderer spriteRenderer;  
+    protected SpriteRenderer spriteRenderer;  
 
     private Rigidbody2D rb; 
     public float damageCooldown = 1f;  
-    private bool canTakeDamage = true;  
+    public bool canTakeDamage = true;
+    protected bool IsInvincible { get; set; }   
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -37,7 +38,7 @@ public abstract class EnemyController : MonoBehaviour
     public void TakeDamage(int damage, Vector2 knockbackDirection)
     {
         
-        if (canTakeDamage)
+        if (canTakeDamage && !IsInvincible)
         {
             health -= damage;
             Debug.Log("Enemy took damage. Current health: " + health);

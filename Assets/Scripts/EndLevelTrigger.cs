@@ -49,13 +49,12 @@ public class EndLevelTrigger : MonoBehaviour
 
        
         Destroy(endLevelSprite);
-
+        countdownTimer.DeactivateCountdown();
         
         yield return new WaitForSeconds(animationDuration);
 
         // End the level 
         levelTimer.OnLevelCompleted();
-        countdownTimer.DeactivateCountdown();
     }
 
     

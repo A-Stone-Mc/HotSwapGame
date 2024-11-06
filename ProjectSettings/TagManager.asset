@@ -9,6 +9,7 @@ TagManager:
   - Platform
   - Wall
   - Bounds
+  - Particle
   layers:
   - Default
   - TransparentFX

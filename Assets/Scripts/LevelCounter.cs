@@ -16,6 +16,7 @@ public class LevelCounter : MonoBehaviour
 
     public Button continueButton;
     public Button retryButton;
+    public int levelNumberToLoad;
 
     void Update()
     {
@@ -72,7 +73,8 @@ public class LevelCounter : MonoBehaviour
     public void LoadNextLevel()
     {
         
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1); // CHANGE LOADING NEXT SCENE
+       string levelName = "Level" + levelNumberToLoad;
+        SceneManager.LoadScene(levelName);
     }
 
     public void RetryLevel()

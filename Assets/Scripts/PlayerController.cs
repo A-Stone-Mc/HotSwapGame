@@ -284,38 +284,57 @@ public class PlayerController : MonoBehaviour
 
         if (canSprayFire)
         {
-            fireCooldownTimer -= Time.deltaTime;
-
-            if (Input.GetKey(KeyCode.E) && fireDurationTimer > 0)
+            if (fireDurationTimer > 0)
             {
-                
-                if (activeFireStream == null)
+                if (Input.GetKey(KeyCode.E)) 
                 {
-                    Vector3 firePosition = fireOriginPoint.position;
+                    if (activeFireStream == null)
+                    {
+                        Vector3 firePosition = fireOriginPoint.position;
+                        
+                        
+                        activeFireStream = Instantiate(
+                            transform.localScale.x > 0 ? fireStreamRightPrefab : fireStreamLeftPrefab,
+                            firePosition,
+                            Quaternion.identity
+                        );
+                        activeFireStream.transform.localScale = new Vector3(transform.localScale.x, 1, 1);  
+                        activeFireStream.transform.parent = transform;  
+                    }
+
+                    fireDurationTimer -= Time.deltaTime;
 
                     
-                    activeFireStream = Instantiate(
-                        transform.localScale.x > 0 ? fireStreamRightPrefab : fireStreamLeftPrefab,
-                        firePosition,
-                        Quaternion.identity
-                    );
-                    activeFireStream.transform.localScale = new Vector3(transform.localScale.x, 1, 1);  
-                    activeFireStream.transform.parent = transform;  
+                    if (fireCooldownTimer <= 0)
+                    {
+                        DamageEnemiesInFireRange();
+                        fireCooldownTimer = fireCooldown; 
+                    }
+                    else
+                    {
+                        fireCooldownTimer -= Time.deltaTime;
+                    }
                 }
-
-               
-                fireDurationTimer -= Time.deltaTime;
-
-                
-                if (fireCooldownTimer <= 0)
+                else if (activeFireStream != null)
                 {
-                    DamageEnemiesInFireRange();
-                    fireCooldownTimer = fireCooldown;
+                    Destroy(activeFireStream); 
                 }
             }
-            else if (activeFireStream != null)
+            else
             {
-                Destroy(activeFireStream);  
+                
+                fireCooldownTimer -= Time.deltaTime;
+                if (fireCooldownTimer <= 0)
+                {
+                    fireDurationTimer = fireDuration;  
+                    fireCooldownTimer = fireCooldown;  
+                }
+
+                
+                if (activeFireStream != null)
+                {
+                    Destroy(activeFireStream);
+                }
             }
         }
 
@@ -638,16 +657,24 @@ public class PlayerController : MonoBehaviour
 
     private void DamageEnemiesInFireRange()
     {
-        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(fireOriginPoint.position, fireDamageRadius); 
-        foreach (Collider2D enemy in hitEnemies)
+        
+        Collider2D[] hitObjects = Physics2D.OverlapCircleAll(fireOriginPoint.position, fireDamageRadius); 
+        
+        foreach (Collider2D obj in hitObjects)
         {
-            if (enemy.CompareTag("Enemy"))
+            
+            if (obj.CompareTag("Enemy"))
             {
-                EnemyController enemyController = enemy.GetComponent<EnemyController>();
+                EnemyController enemyController = obj.GetComponent<EnemyController>();
                 if (enemyController != null)
                 {
-                    enemyController.TakeDamage(1, Vector2.zero);
+                    enemyController.TakeDamage(1, Vector2.zero); // Deal 1 damage to enemy
                 }
+            }
+            
+            else if (obj.CompareTag("Particle"))
+            {
+                Destroy(obj.gameObject); // Destroy the particle
             }
         }
     }

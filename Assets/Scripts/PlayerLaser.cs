@@ -38,5 +38,11 @@ public class PlayerLaser : MonoBehaviour
             }
             Destroy(gameObject);  // Destroy the laser on impact
         }
+
+        else if (collision.CompareTag("Particle"))
+        {
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+        }
     }
 }
