@@ -7,6 +7,8 @@ public class HealthReset : MonoBehaviour
    
     private HealthUIManager healthUIManager;
     private PlayerController playerController; 
+    private AudioSource audioSource;
+    public AudioClip resetSound;
    
 
     private void Start()
@@ -14,6 +16,8 @@ public class HealthReset : MonoBehaviour
         
         healthUIManager = FindObjectOfType<HealthUIManager>();
         playerController = FindObjectOfType<PlayerController>();
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
    
@@ -22,6 +26,7 @@ public class HealthReset : MonoBehaviour
         
         if (collision.CompareTag("Player"))
         {
+            audioSource.PlayOneShot(resetSound);
             playerController.ResetHealthToMax();
             
             

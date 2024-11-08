@@ -27,12 +27,16 @@ public class SprayingEnemyController : EnemyController
     private Animator animator; 
     public float initialSprayDelay = 1.5f;  
     public Transform sprayPoint; 
+    private AudioSource audioSource;
+    public AudioClip deathSound;
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();  // Get the Animator component
         StartCoroutine(SprayRoutine());
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     private void Update()

@@ -5,7 +5,17 @@ using UnityEngine;
 public class FuelPickup : MonoBehaviour
 {
     public float fuelAmount = 10f;
+    public AudioClip pickupSound;
     private bool isCollected = false;
+
+    private AudioSource audioSource;
+
+
+    void Start()
+    {
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -13,13 +23,14 @@ public class FuelPickup : MonoBehaviour
         {
             isCollected = true;
             FuelManager.Instance.AddFuel(fuelAmount);
+            audioSource.PlayOneShot(pickupSound);
             StartCoroutine(DestroyAfterDelay());
         }
     }
 
     IEnumerator DestroyAfterDelay()
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         Destroy(gameObject);
     }
 }

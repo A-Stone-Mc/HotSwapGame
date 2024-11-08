@@ -75,6 +75,8 @@ public class PlayerController : MonoBehaviour
     public AudioClip swapSound;
     public AudioClip damageSound;
 
+    public AudioClip deathSound; 
+
     private float walkSoundCooldown = 0.2f;  // Cooldown for walking sound effects
     private float nextWalkSoundTime = 0f;
 
@@ -618,14 +620,23 @@ public class PlayerController : MonoBehaviour
     private void ThrowGasBomb()
     {
         animator.SetTrigger("Throw");
+        StartCoroutine(DelayedThrow());
+    }
+
+
+    private IEnumerator DelayedThrow()
+    {
+        
+        yield return new WaitForSeconds(1.1f); 
+
+        
         GameObject bomb = Instantiate(gasBombPrefab, throwPoint.position, Quaternion.identity);
         Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
 
-        
         Vector2 throwDirection = transform.localScale.x > 0 
                                 ? Quaternion.Euler(0, 0, currentThrowAngle) * Vector2.right // Right-facing
                                 : Quaternion.Euler(0, 0, -currentThrowAngle) * Vector2.left; // Left-facing (invert angle)
-        
+
         rb.AddForce(throwDirection * throwForce, ForceMode2D.Impulse);
     }
 
@@ -704,7 +715,7 @@ public class PlayerController : MonoBehaviour
         spriteRenderer.sprite = fireTypeSprite;  
         transform.localScale = newFireScale;     
 
-        boxCollider.size = new Vector2(13.62164f, 17.38288f); //collider size
+        boxCollider.size = new Vector2(13.62164f, 15.58288f); //collider size
         boxCollider.offset = new Vector2(-0.2188742f, -1.548562f);
 
         canSprayFire = true;
@@ -1084,6 +1095,7 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        PlaySound(deathSound);
         body.velocity = new Vector2(0, body.velocity.y);
         
         if (FuelManager.Instance != null)

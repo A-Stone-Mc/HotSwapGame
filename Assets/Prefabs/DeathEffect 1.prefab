@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2418061933680015759}
   - component: {fileID: 3535281134653287212}
   - component: {fileID: 4614040770895686765}
+  - component: {fileID: 7581025507073822988}
   m_Layer: 0
   m_Name: DeathEffect 1
   m_TagString: Untagged
@@ -106,3 +107,16 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7581025507073822988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4896389252578577949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b5de158274a4704e8af3104423402b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathSound: {fileID: 8300000, guid: d11dbd82b12150f4d842f62852fb3607, type: 3}

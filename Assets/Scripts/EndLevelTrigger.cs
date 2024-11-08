@@ -14,20 +14,26 @@ public class EndLevelTrigger : MonoBehaviour
     public CameraController cameraController; 
 
     private SpriteRenderer spriteRenderer;      
-    private Collider2D triggerCollider;        
+    private Collider2D triggerCollider;  
+
+    private AudioSource audioSource;
+
+    public AudioClip victorySound;      
 
     private void Start()
     {
         
         spriteRenderer = GetComponent<SpriteRenderer>();
         triggerCollider = GetComponent<Collider2D>();
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
 
-            
+            audioSource.PlayOneShot(victorySound);
             DisablePlayer();
 
             DisableEndLevelTrigger();
