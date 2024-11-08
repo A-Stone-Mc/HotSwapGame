@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class PlayerController : MonoBehaviour
     public float dropInterval = 1f; // Time between player drops
     private float dropTimer;
     private bool isInAir= false;
+    
 
     // Laser ability
     public GameObject laserPrefab; // Prefab for player laser
@@ -123,15 +125,23 @@ public class PlayerController : MonoBehaviour
     private bool canSprayFire = false;
     public Transform fireOriginPoint;
     [SerializeField] private float fireDamageRadius = 1.64f;
+
+    //animations
+    private bool isFlying;
+    private bool hasLaserAbility;
+
+    private bool hasGasAbility;
+
+    private Animator animator;
     private void Awake()
     {
-        //Grab references for rigidbody and animator from object
+        
         body = GetComponent<Rigidbody2D>();
-        //anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
         feetCollider = GetComponent<BoxCollider2D>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         currentHealth = maxHealth;
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -139,20 +149,34 @@ public class PlayerController : MonoBehaviour
         if (!isKnockedBack) 
         {
             horizontalInput = Input.GetAxis("Horizontal");
+            animator.SetFloat("horizontalInput", Mathf.Abs(horizontalInput));
 
             // Flip player when moving left-right
             Vector3 scale = transform.localScale;
             if (horizontalInput > 0.01f)
+            {
                 scale.x = Mathf.Abs(scale.x);  // Face right
+                animator.SetBool("isWalking", true);
+            }
             else if (horizontalInput < -0.01f)
+            {    
+                 animator.SetBool("isWalking", true);
                 scale.x = -Mathf.Abs(scale.x);  // Face left
+            }
 
+            else
+            {
+                animator.SetBool("isWalking", false);
+            }
             transform.localScale = scale;
 
             if (canShootLaser && canChargeJump)
             {
                 HandleChargeJump(); 
             }
+
+
+           
 
 
             if (canGroundSlam && groundSlamTimer > 0)
@@ -192,7 +216,15 @@ public class PlayerController : MonoBehaviour
 
 
             // Normal movement
-            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+             if (horizontalInput != 0)
+            {
+                body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+                lastMovementDirection = new Vector2(horizontalInput, 0);
+            }
+            else
+            {
+                body.velocity = new Vector2(0, body.velocity.y); // Stop movement when input is zero
+            }
 
             if (isInAir && canShootLaser)
             {
@@ -221,6 +253,8 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                isFlying = false;
+                animator.SetBool("isFlying", false); 
                 body.gravityScale = 5;  // Return to reg gravity
             }
 
@@ -292,7 +326,7 @@ public class PlayerController : MonoBehaviour
                     {
                         Vector3 firePosition = fireOriginPoint.position;
                         
-                        
+                        animator.SetTrigger("SprayFire");
                         activeFireStream = Instantiate(
                             transform.localScale.x > 0 ? fireStreamRightPrefab : fireStreamLeftPrefab,
                             firePosition,
@@ -317,6 +351,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else if (activeFireStream != null)
                 {
+                    animator.ResetTrigger("SprayFire");
                     Destroy(activeFireStream); 
                 }
             }
@@ -345,9 +380,7 @@ public class PlayerController : MonoBehaviour
         }
         
 
-            //Set animation
-            //anim.SetBool("IsWalking", horizontalInput != 0);
-        // anim.SetBool("IsInAir", !isGrounded());
+            
 
             // Wall jump logic
             if (wallJumpCooldown > 0.2f)
@@ -369,6 +402,11 @@ public class PlayerController : MonoBehaviour
                 wallJumpCooldown += Time.deltaTime;
 
         }
+
+        if (isGrounded() && animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"))
+        {
+            animator.ResetTrigger("Jump");
+        }
     }
 
     private void Jump()
@@ -379,7 +417,7 @@ public class PlayerController : MonoBehaviour
             isInAir = true;
             if (canFly == false)
                 PlaySound(jumpSound);
-            //anim.SetTrigger("Jump");
+            animator.SetTrigger("Jump");
              StartCoroutine(RotatePlayer());
         }
         else if (onWall() && !isGrounded())
@@ -418,6 +456,9 @@ public class PlayerController : MonoBehaviour
     {
         // Reset abilities
         canFly = false;
+        isFlying = false; 
+        hasLaserAbility = false; 
+        hasGasAbility = false;
         canShootLaser = false;
         canThrowGasBomb = false;
         canChargeJump = false; 
@@ -425,9 +466,16 @@ public class PlayerController : MonoBehaviour
         arcRenderer.enabled = false; 
         canSprayFire = false;
         Destroy(activeFireStream);
+        animator.SetLayerWeight(animator.GetLayerIndex("Flying"), 0);
+        animator.SetLayerWeight(animator.GetLayerIndex("Laser"), 0);   
+        animator.SetLayerWeight(animator.GetLayerIndex("Gas"), 0);
+        animator.SetLayerWeight(animator.GetLayerIndex("Fire"), 0);
+        animator.SetLayerWeight(animator.GetLayerIndex("Default"), 0);
     }
     private void Fly()
     {
+        isFlying = true;
+        animator.SetBool("isFlying", true);   
         body.gravityScale = 0;  // zero gravity
         body.velocity = new Vector2(body.velocity.x, flySpeed);  //slowly upwards
     }
@@ -461,6 +509,7 @@ public class PlayerController : MonoBehaviour
         // Jump with a force proportional to the charge time
         float chargeMultiplier = Mathf.Lerp(1f, 1.5f, chargeJumpTimer / maxChargeTime);
         body.velocity = new Vector2(body.velocity.x, jumpPower * chargeMultiplier); // Apply jump force
+        animator.SetTrigger("Jump");
         PlaySound(jumpSound); // Play sound if needed
         Debug.Log("Charged Jump Performed with force multiplier: " + chargeMultiplier);
 
@@ -568,6 +617,7 @@ public class PlayerController : MonoBehaviour
 
     private void ThrowGasBomb()
     {
+        animator.SetTrigger("Throw");
         GameObject bomb = Instantiate(gasBombPrefab, throwPoint.position, Quaternion.identity);
         Rigidbody2D rb = bomb.GetComponent<Rigidbody2D>();
 
@@ -591,6 +641,8 @@ public class PlayerController : MonoBehaviour
     {
         ResetAbilities();
         canFly = true;
+        animator.SetTrigger("GainFlyingAbilities"); 
+        animator.SetLayerWeight(animator.GetLayerIndex("Flying"), 1);
     }
 
     private IEnumerator TempInvulnerability(float duration)
@@ -626,6 +678,9 @@ public class PlayerController : MonoBehaviour
     public void GainLaserAbilities()
     {
         ResetAbilities();
+        hasLaserAbility = true;
+        animator.SetTrigger("GainLaserAbilities");
+        animator.SetLayerWeight(animator.GetLayerIndex("Laser"), 1);
         spriteRenderer.sprite = laserTypeSprite;  // Change to laser sprite
         transform.localScale = newLaserScale;  
         Vector2 newSize = new Vector2(14.80273f, 14.70244f);  
@@ -642,7 +697,9 @@ public class PlayerController : MonoBehaviour
 
     public void GainFireAbilities()
     {
-        ResetAbilities(); 
+        ResetAbilities();
+        animator.SetTrigger("GainFireAbilities");
+        animator.SetLayerWeight(animator.GetLayerIndex("Fire"), 1); 
 
         spriteRenderer.sprite = fireTypeSprite;  
         transform.localScale = newFireScale;     
@@ -942,7 +999,10 @@ public class PlayerController : MonoBehaviour
 
     private void GainGasAbilities()
     {
-        ResetAbilities(); 
+        ResetAbilities();
+        hasGasAbility = true;
+        animator.SetTrigger("GainGasAbilities");
+        animator.SetLayerWeight(animator.GetLayerIndex("Gas"), 1);
 
        
         spriteRenderer.sprite = gasTypeSprite; 
@@ -1024,6 +1084,7 @@ public class PlayerController : MonoBehaviour
 
     void Die()
     {
+        body.velocity = new Vector2(0, body.velocity.y);
         
         if (FuelManager.Instance != null)
         {
@@ -1032,12 +1093,17 @@ public class PlayerController : MonoBehaviour
   
         Debug.Log("Player Died!");
         //restart level
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-        UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex);
+        animator.SetBool("isDead", true);
+        Invoke("RestartLevel", 1.3f);
         if (FuelManager.Instance != null)
         {
             FuelManager.Instance.ResetFuel();
         }
+    }
+
+    private void RestartLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
 
