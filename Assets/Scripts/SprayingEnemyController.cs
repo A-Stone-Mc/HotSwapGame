@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class SprayingEnemyController : EnemyController
 {
+    public GameObject deathEffectPrefab;
+    public float effectDuration = 1f;    
+    public Vector3 deathEffectScale = new Vector3(0.1f, 0.1f, 0.1f); 
+    public Vector3 deathEffectOffset = new Vector3(0, 0.5f, 0);
     public Transform pointA;
     public Transform pointB;
     public GameObject sprayObjectPrefab;
@@ -19,11 +23,15 @@ public class SprayingEnemyController : EnemyController
     private bool isSpraying = false;
     private bool isInvincible = false;
     private bool movingToB = true;
-    private GameObject activeShield; 
+    private GameObject activeShield;
+    private Animator animator; 
+    public float initialSprayDelay = 1.5f;  
+    public Transform sprayPoint; 
 
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
+        animator = GetComponent<Animator>();  // Get the Animator component
         StartCoroutine(SprayRoutine());
     }
 
@@ -32,6 +40,11 @@ public class SprayingEnemyController : EnemyController
         if (!isSpraying && !isInvincible)
         {
             Patrol();
+            animator.SetBool("IsMoving", true); 
+        }
+        else
+        {
+            animator.SetBool("IsMoving", false);  
         }
 
         DetectPlayer();
@@ -71,11 +84,15 @@ public class SprayingEnemyController : EnemyController
     private IEnumerator SprayRoutine()
     {
         isSpraying = true;
+        animator.SetTrigger("Spray");
+        
+        yield return new WaitForSeconds(initialSprayDelay);
 
         
         for (int i = 0; i < numberOfSprayObjects; i++)
         {
-            GameObject sprayObject = Instantiate(sprayObjectPrefab, transform.position, Quaternion.identity);
+            Vector3 spawnPosition = sprayPoint ? sprayPoint.position : transform.position;
+            GameObject sprayObject = Instantiate(sprayObjectPrefab, spawnPosition, Quaternion.identity);
             sprayObject.GetComponent<FollowPlayer>().Initialize(player); 
             yield return new WaitForSeconds(delayBetweenParticles);
         }
@@ -118,6 +135,7 @@ public class SprayingEnemyController : EnemyController
 
     public override void Die()
     {
+        SpawnDeathEffect();
         Destroy(gameObject); 
     }
 
@@ -133,5 +151,19 @@ public class SprayingEnemyController : EnemyController
         {
             base.TakeDamage(damage, knockbackDirection);
         }
+    }
+
+    private void SpawnDeathEffect()
+    {
+        
+        GameObject effect = Instantiate(deathEffectPrefab, transform.position + deathEffectOffset, Quaternion.identity);
+
+       
+        effect.transform.localScale = deathEffectScale; 
+
+        Debug.Log("Death effect instantiated and positioned over the enemy.");
+
+        
+        Destroy(effect, effectDuration);
     }
 }
