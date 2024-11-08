@@ -668,17 +668,17 @@ public class PlayerController : MonoBehaviour
         
         GameObject laserBeam = Instantiate(laserPrefab, laserShootPoint.position, laserShootPoint.rotation);
 
-        // Determine the direction based on the player's facing direction
+       
         Vector2 direction = transform.localScale.x > 0 ? Vector2.right : Vector2.left;
 
         
         PlayerLaser beamScript = laserBeam.GetComponent<PlayerLaser>();
         if (beamScript != null)
         {
-            beamScript.SetDirection(direction);  // Set the direction for the laser
+            beamScript.SetDirection(direction);
         }
 
-        // Flip the laser prefab if the player is facing left
+       
         if (direction == Vector2.left)
         {
             laserBeam.transform.localScale = new Vector3(-laserBeam.transform.localScale.x, laserBeam.transform.localScale.y, laserBeam.transform.localScale.z);
@@ -692,11 +692,11 @@ public class PlayerController : MonoBehaviour
         hasLaserAbility = true;
         animator.SetTrigger("GainLaserAbilities");
         animator.SetLayerWeight(animator.GetLayerIndex("Laser"), 1);
-        spriteRenderer.sprite = laserTypeSprite;  // Change to laser sprite
+        spriteRenderer.sprite = laserTypeSprite; 
         transform.localScale = newLaserScale;  
-        Vector2 newSize = new Vector2(14.80273f, 14.70244f);  
+        Vector2 newSize = new Vector2(8.959795f, 14.70244f);  
         boxCollider.size = newSize;
-        boxCollider.offset = new Vector2(0.2726059f, -1.744905f);  // Adjust collider offset
+        boxCollider.offset = new Vector2(-0.249089f, -1.744905f);  
 
         canChargeJump = true;
 
@@ -830,20 +830,20 @@ public class PlayerController : MonoBehaviour
 
     private IEnumerator ApplyKnockback()
     {
-        isKnockedBack = true;  // Disable player movement
+        isKnockedBack = true;  
         arcRenderer.enabled = false; 
 
-        // Temporarily disable collisions with nearby enemies
+        
         DisableEnemyColliders(true);
 
-        Vector2 knockbackDirection = -lastMovementDirection.normalized;  // Opposite of last movement direction
-        body.velocity = new Vector2(knockbackDirection.x * knockbackForce, knockbackForce);  // Apply knockback force
+        Vector2 knockbackDirection = -lastMovementDirection.normalized; 
+        body.velocity = new Vector2(knockbackDirection.x * knockbackForce, knockbackForce);  
 
-        yield return new WaitForSeconds(knockbackDuration);  // Wait for knockback duration
+        yield return new WaitForSeconds(knockbackDuration);  
 
-        isKnockedBack = false;  // Re-enable player movement
+        isKnockedBack = false;  
 
-        // Re-enable collisions with nearby enemies
+        
         DisableEnemyColliders(false);
     }
 
@@ -868,32 +868,32 @@ public class PlayerController : MonoBehaviour
 
     private void DisableEnemyColliders(bool disable)
     {
-        // Find all nearby enemies
+       
         Collider2D[] nearbyEnemies = Physics2D.OverlapCircleAll(transform.position, 5f);
 
         if (disable)
         {
-            // Disable colliders and store them in the list
+           
             foreach (Collider2D enemyCollider in nearbyEnemies)
             {
                 if (enemyCollider.CompareTag("Enemy"))
                 {
-                    enemyCollider.enabled = false;  // Disable the enemy's collider
-                    disabledEnemyColliders.Add(enemyCollider);  // Add to the list for later re-enabling
+                    enemyCollider.enabled = false;  
+                    disabledEnemyColliders.Add(enemyCollider);  
                 }
             }
         }
         else
         {
-            // Re-enable colliders that were disabled
+            
             foreach (Collider2D enemyCollider in disabledEnemyColliders)
             {
-                if (enemyCollider != null)  // Ensure the collider still exists
+                if (enemyCollider != null)  
                 {
-                    enemyCollider.enabled = true;  // Re-enable the collider
+                    enemyCollider.enabled = true; 
                 }
             }
-            disabledEnemyColliders.Clear();  // Clear the list after re-enabling
+            disabledEnemyColliders.Clear();  
         }
     }
 
@@ -953,7 +953,7 @@ public class PlayerController : MonoBehaviour
         {
             spriteRenderer.sprite = flyingTypeSprite;  // Change to flying enemy sprite
             transform.localScale = newFlyingScale;
-            Vector2 newSize = new Vector2(13.299f, 13.78256f); // New width and height of flying collider
+            Vector2 newSize = new Vector2(9.16f, 13.78256f); // New width and height of flying collider
             boxCollider.size = newSize;
         
             boxCollider.offset = new Vector2(-0.5520077f, -1.562553f);
