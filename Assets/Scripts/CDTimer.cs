@@ -60,8 +60,8 @@ public class CDTimer : MonoBehaviour
         if (lifeLossCountdown <= 0)
         {
             // Take damage after runnning out of time
-            playerController.TakeDamage(1);
-            lifeLossCountdown = damageInterval; // Reset countdown to 5 seconds
+            playerController.TakeTimeDamage(1);
+            lifeLossCountdown = damageInterval; 
         }
     }
 

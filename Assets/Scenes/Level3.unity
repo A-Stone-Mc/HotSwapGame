@@ -14384,7 +14384,7 @@ MonoBehaviour:
   fireDamageRadius: 1.64
   rightFireStreamPrefab: {fileID: 3514672195688885252, guid: 371c141b189cbe543b30df7491842fde, type: 3}
   leftFireStreamPrefab: {fileID: 3514672195688885252, guid: 23e767d58dfccf740843720ab86e4e79, type: 3}
-  player: {fileID: 0}
+  player: {fileID: 1451624602}
 --- !u!95 &1144497683
 Animator:
   serializedVersion: 5

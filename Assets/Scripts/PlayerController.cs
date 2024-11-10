@@ -780,7 +780,7 @@ public class PlayerController : MonoBehaviour
             currentHealth -= damage;
             damageCooldownTimer = damageCooldown;
 
-            // No knockback is applied
+            // No knockback
             PlaySound(damageSound);
 
             if (currentHealth <= 0)
@@ -791,6 +791,28 @@ public class PlayerController : MonoBehaviour
             {
                 StartCoroutine(FlashGreen());
                 Debug.Log("Player hit by gas cloud! Current Health: " + currentHealth);
+            }
+
+            healthUIManager.TakeDamage(damage);
+        }
+    }
+
+        public void TakeTimeDamage(int damage)
+    {
+        if (!isInvulnerable && damageCooldownTimer <= 0)
+        {
+            currentHealth -= damage;
+            damageCooldownTimer = damageCooldown;
+            PlaySound(damageSound);
+
+            if (currentHealth <= 0)
+            {
+                Die();
+            }
+            else
+            {
+                StartCoroutine(FlashRed());
+                
             }
 
             healthUIManager.TakeDamage(damage);
