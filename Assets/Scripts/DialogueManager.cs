@@ -32,13 +32,13 @@ public class DialogueManager : MonoBehaviour
         "...",
         "Focus your neural link on a creature shortly after they die. This will create a temporal portal that sends you into their body. But be careful when taking on these mutant experiments, you can only take so many hits before you perish.",
         "...",
-        "Remember, each creature has its own abilities. Some can jump higher, others can even fly. Use this to your advantage. Press E to use each ability. Those Laser shooters seem to have a secondary ability, so use R for that. No matter what enemy you inhabit, you should be able to jump or fly by holding or pressing SPACE.",
+        "Remember, each creature has its own abilities. Some can jump higher, others can even fly. Use this to your advantage. Press <color=#FFFF00>E</color> to use each ability. Those Laser shooters have a secondary ability, so use <color=#FFFF00>R</color> for that. No matter what enemy you inhabit, you should be able to jump or fly by holding or pressing <color=#FFFF00>SPACE</color>.",
         "...",
         "What’s the goal with all this you ask? We need to find a way to reintegrate your brain with a new body. Along the way, we'll uncover what caused the experiment to fail and how to fix it.",
         "....",
-        "Lastly, if you need assistance, I'll communicate with you throughout your journey. Now, let's get moving. Time is of the essence.",
+        "Lastly, if you need assistance, I'll communicate with you throughout your journey. Now, let's get moving.",
         "...",
-        "Stay sharp, L.O.B.E. The path ahead won't be easy, but I have faith in you."
+        "Stay sharp, L.O.B.E. The path ahead won't be easy, but I have faith in you. <color=#FFFF00>P.S., here's a hint: for your first enemy, jump on its head to defeat it. After that, jumping on them won't be very useful</color>. TIME IS OF THE ESSENCE!"
     };
 
     private int currentLine = 0;
@@ -77,6 +77,8 @@ public class DialogueManager : MonoBehaviour
             EndTutorial();
         }
     }
+
+    
 
     private void ShowDialogue()
     {
