@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     private int currentHealth;
     private bool hasAbilities = false;
     private bool canFly = false; 
-    private float flySpeed = 2f; //speed of flight powers
+    public float flySpeed = 2f; //speed of flight powers
     public float dropInterval = 1f; // Time between player drops
     private float dropTimer;
     private bool isInAir= false;
@@ -45,12 +45,12 @@ public class PlayerController : MonoBehaviour
 
 
     [Tooltip("Scale of Flying Enemy Type")]
-    public Vector3 newFlyingScale; //scale of flying enemy sprite
+    public Vector3 newFlyingScale; 
     [Tooltip("Scale of Laser Enemy Type")]
     public Vector3 newLaserScale;
 
     public Vector3 newFireScale;
-    public LayerMask platformLayer;  // Reference to the platform layer
+    public LayerMask platformLayer;  
 
     public Sprite flyingTypeSprite; 
     public Sprite laserTypeSprite;
