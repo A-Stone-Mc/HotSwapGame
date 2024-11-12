@@ -5,6 +5,12 @@ using UnityEngine;
 public class ChangeSpeed : MonoBehaviour
 {
     private PlayerController pC;
+    private bool isLiteMode;
+
+       void Start()
+    {
+        isLiteMode = PlayerPrefs.GetString("Difficulty") == "Lite";
+    }
 
     void OnTriggerEnter2D(Collider2D collision)
     {
@@ -15,12 +21,16 @@ public class ChangeSpeed : MonoBehaviour
 
             if (pC != null)
             {
-                pC.flySpeed = 5.0f;
-            }
-            else
-            {
-                Debug.LogWarning("PlayerControllernot found");
-            }
+                if (isLiteMode)
+                {
+                    pC.flySpeed = 3.0f;
+                }
+                else
+                {
+                    pC.flySpeed = 5.0f; 
+                }
+            }   
+
         }
     }
 }
