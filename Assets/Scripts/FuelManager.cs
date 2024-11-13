@@ -50,7 +50,7 @@ public class FuelManager : MonoBehaviour
     {
         if (fuelBar == null)
         {
-            fuelBar = GameObject.Find("Fill").GetComponent<Image>(); // Find the fuel bar in the scene by name
+            fuelBar = GameObject.Find("Fill").GetComponent<Image>(); 
         }
     }
 

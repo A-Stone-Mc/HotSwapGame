@@ -15,11 +15,13 @@ public class CDTimer : MonoBehaviour
     private bool isLiteMode;
     private bool isLifeLossActive = false;
     private PlayerController playerController;
+    private Color originalTextColor;
 
     void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
         isLiteMode = PlayerPrefs.GetString("Difficulty") == "Lite";
+        originalTextColor = timerText.color;
     }
 
     void Update()
@@ -29,6 +31,7 @@ public class CDTimer : MonoBehaviour
            
             timeRemaining -= Time.deltaTime;
             timerText.text = timeRemaining.ToString("F2");
+            timerText.color = originalTextColor;
         }
         else if (timeRemaining <= 0)
         {

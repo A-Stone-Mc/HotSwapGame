@@ -10,6 +10,7 @@ TagManager:
   - Wall
   - Bounds
   - Particle
+  - Laser
   layers:
   - Default
   - TransparentFX

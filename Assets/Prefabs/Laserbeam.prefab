@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2276626497489100786}
   m_Layer: 0
   m_Name: Laserbeam
-  m_TagString: Untagged
+  m_TagString: Particle
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -29,8 +29,8 @@ Transform:
   m_GameObject: {fileID: 4081394090707935040}
   serializedVersion: 2
   m_LocalRotation: {x: -0.0000003745069, y: 2.7672456e-10, z: 0.00073890336, w: -0.99999976}
-  m_LocalPosition: {x: 32.8428, y: -0.8775, z: 0}
-  m_LocalScale: {x: 0.07847403, y: 0.036026653, z: 1}
+  m_LocalPosition: {x: 32.1925, y: -0.6896, z: 0}
+  m_LocalScale: {x: 0.036122866, y: 0.048192855, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 728cf2eb13e093545803094c5fc59e63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 5
   lifetime: 2
   damage: 1
 --- !u!50 &311979739578244747

@@ -4,29 +4,27 @@ using UnityEngine;
 
 public class OneWayPlatformer : MonoBehaviour
 {
-    private PlatformEffector2D effector; 
-    public float waitTime = 0.5f; // Delay before the platform becomes solid
+    private Collider2D platformCollider;
+    public float waitTime = 0.5f; // Delay before the platform becomes solid again
 
     private void Start()
     {
-        effector = GetComponent<PlatformEffector2D>();
+        platformCollider = GetComponent<Collider2D>();
     }
 
     private void Update()
     {
-        
-        if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-        {  
-            effector.rotationalOffset = 180f;
-            StartCoroutine(ResetEffector());
-
+        // Check if player is pressing the down key to drop through
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            StartCoroutine(DisableColliderTemporarily());
         }
     }
 
-   
-    IEnumerator ResetEffector()
+    private IEnumerator DisableColliderTemporarily()
     {
-        yield return new WaitForSeconds(waitTime);
-        effector.rotationalOffset = 0f;
+        platformCollider.enabled = false; // Disable the platform's collider
+        yield return new WaitForSeconds(waitTime); // Wait for a short time
+        platformCollider.enabled = true; // Re-enable the collider
     }
 }

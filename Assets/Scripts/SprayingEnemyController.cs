@@ -30,13 +30,24 @@ public class SprayingEnemyController : EnemyController
     private AudioSource audioSource;
     public AudioClip deathSound;
 
+    public GameObject LaserenemyPrefab;
+    public GameObject FireenemyPrefab; 
+    public GameObject spawnEffectPrefab;  
+    public Transform spawnPoint1;  
+    public Transform spawnPoint2;  
+    public float spawnEffectDuration = 2f;
+    public GameObject healthPowerUpPrefab;    
+    private int shieldActivationCount = 0;    
+    public Transform powerUpSpawnPoint;   
+
+    
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         animator = GetComponent<Animator>();  // Get the Animator component
-        StartCoroutine(SprayRoutine());
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
+
     }
 
     private void Update()
@@ -115,6 +126,7 @@ public class SprayingEnemyController : EnemyController
     {
         canTakeDamage = false;
         isInvincible = true;
+        shieldActivationCount++;
         activeShield = Instantiate(shieldPrefab, transform.position, Quaternion.identity);
         activeShield.transform.parent = transform; 
         activeShield.transform.localPosition = Vector3.zero; 
@@ -125,6 +137,39 @@ public class SprayingEnemyController : EnemyController
         {
             shieldRenderer.sortingOrder = spriteRenderer.sortingOrder + 1; 
         }
+
+        StartCoroutine(SpawnEnemiesWithEffect());
+    }
+
+    private IEnumerator SpawnEnemiesWithEffect()
+    {
+        
+        if (spawnEffectPrefab != null && shieldActivationCount !=4)
+        {
+            GameObject effect1 = Instantiate(spawnEffectPrefab, spawnPoint1.position, Quaternion.identity);
+            Destroy(effect1, spawnEffectDuration);  
+
+            GameObject effect2 = Instantiate(spawnEffectPrefab, spawnPoint2.position, Quaternion.identity);
+            Destroy(effect2, spawnEffectDuration); 
+        }
+
+       
+        yield return new WaitForSeconds(spawnEffectDuration);
+
+        if (shieldActivationCount == 4 && healthPowerUpPrefab != null)
+        {
+
+            Instantiate(healthPowerUpPrefab, powerUpSpawnPoint.position, Quaternion.identity);
+
+        
+            shieldActivationCount = 0;
+        }
+        else
+        {
+            Instantiate(LaserenemyPrefab, spawnPoint1.position, Quaternion.identity);
+            Instantiate(FireenemyPrefab, spawnPoint2.position, Quaternion.identity);
+        }
+
     }
 
     private void DeactivateShield()
