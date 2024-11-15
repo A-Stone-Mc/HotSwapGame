@@ -11266,7 +11266,7 @@ MonoBehaviour:
   dropInterval: 0.5
   laserPrefab: {fileID: 5504200605783766974, guid: f1bad4cf67d0e7649936ab692b7f0882, type: 3}
   laserShootPoint: {fileID: 1543783214}
-  laserCooldown: 0.5
+  laserCooldown: 0.8
   newFlyingScale: {x: 0.1112939, y: 0.1053614, z: 1}
   newLaserScale: {x: 0.1200433, y: 0.1247794, z: 1}
   newFireScale: {x: 0.109992, y: 0.11142, z: 1}
