@@ -122,8 +122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a9d5f491fa108d4d94d8022253e6732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 1
   damage: 1
+  bobbingAmplitude: 0.1
+  bobbingFrequency: 0.1
 --- !u!58 &1736274843977850671
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -206,5 +207,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a9d5f491fa108d4d94d8022253e6732, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  followSpeed: 10
   damage: 1
+  bobbingAmplitude: 0.5
+  bobbingFrequency: 2

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SprayingEnemyController : EnemyController
 {
@@ -38,20 +39,42 @@ public class SprayingEnemyController : EnemyController
     public float spawnEffectDuration = 2f;
     public GameObject healthPowerUpPrefab;    
     private int shieldActivationCount = 0;    
-    public Transform powerUpSpawnPoint;   
+
+    private int gateSpawnCount = 0;
+    public Transform powerUpSpawnPoint;
+    public GameObject trapPrefab;           
+    public Transform trapSpawnPoint;     
+    public Transform trapSpawnPointSecond;     
+    public float trapDropRate = 5f;   
+
+    public GameObject gatePrefab;
+    public Transform gateSpawn;
+
+    public GameObject pickupPrefab;            
+    public int numberOfPickups = 5;             
+    public Vector2[] dropOffsets;   
+    public float dropRange = 1f;
+    public Image enemyHealthBarFill; 
+    private int maxHealth; 
+    public GameObject backgroundMusic;
 
     
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        animator = GetComponent<Animator>();  // Get the Animator component
+        animator = GetComponent<Animator>();  
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.playOnAwake = false;
+        maxHealth = health;
 
     }
 
     private void Update()
     {
+        if (enemyHealthBarFill != null)
+        {
+            enemyHealthBarFill.fillAmount = (float)health / maxHealth;
+        }
         if (!isSpraying && !isInvincible)
         {
             Patrol();
@@ -63,6 +86,7 @@ public class SprayingEnemyController : EnemyController
         }
 
         DetectPlayer();
+        
     }
 
     private void Patrol()
@@ -91,8 +115,24 @@ public class SprayingEnemyController : EnemyController
         
         if (Vector2.Distance(transform.position, player.position) < detectionRange && !isSpraying && !isInvincible)
         {
+            if (backgroundMusic != null && !backgroundMusic.activeSelf)
+            {
+                backgroundMusic.SetActive(true);
+            }
+            if (enemyHealthBarFill != null && !enemyHealthBarFill.transform.parent.gameObject.activeSelf)
+            {
+                enemyHealthBarFill.transform.parent.gameObject.SetActive(true);
+            }
             StopAllCoroutines();
             StartCoroutine(SprayRoutine());
+            if (gatePrefab != null)
+            {
+                if(gateSpawnCount < 1)
+                {
+                    Instantiate(gatePrefab, gateSpawn.position, Quaternion.Euler(0, 0, -90));
+                    gateSpawnCount++;
+                }
+            }
         }
     }
 
@@ -139,6 +179,12 @@ public class SprayingEnemyController : EnemyController
         }
 
         StartCoroutine(SpawnEnemiesWithEffect());
+
+        if (shieldActivationCount >= 2)
+        {
+            StartCoroutine(DropTraps());
+        }
+
     }
 
     private IEnumerator SpawnEnemiesWithEffect()
@@ -172,6 +218,22 @@ public class SprayingEnemyController : EnemyController
 
     }
 
+    private IEnumerator DropTraps()
+    {
+        while (isInvincible) 
+        {
+            
+            if (trapPrefab != null && trapSpawnPoint != null)
+            {
+                Instantiate(trapPrefab, trapSpawnPoint.position, Quaternion.identity);
+                Instantiate(trapPrefab, trapSpawnPointSecond.position, Quaternion.identity);
+            }
+
+            
+            yield return new WaitForSeconds(trapDropRate);
+        }
+    }
+
     private void DeactivateShield()
     {
         canTakeDamage = true;
@@ -185,7 +247,34 @@ public class SprayingEnemyController : EnemyController
     public override void Die()
     {
         SpawnDeathEffect();
+        DropPickups();
+        if (enemyHealthBarFill != null)
+        {
+            enemyHealthBarFill.transform.parent.gameObject.SetActive(false);
+        }
+        if (backgroundMusic != null && backgroundMusic.activeSelf)
+        {
+            backgroundMusic.SetActive(false);
+        }
         Destroy(gameObject); 
+    }
+
+    private void DropPickups()
+    {
+        for (int i = 0; i < numberOfPickups; i++)
+        {
+            
+            Vector2 randomOffset = new Vector2(
+                Random.Range(-dropRange, dropRange),
+                Random.Range(-dropRange, dropRange)
+            );
+
+            
+            Vector2 dropPosition = (Vector2)transform.position + randomOffset;
+
+            
+            Instantiate(pickupPrefab, dropPosition, Quaternion.identity);
+        }
     }
 
     public override void UseAbility()
@@ -199,7 +288,13 @@ public class SprayingEnemyController : EnemyController
         if (!isInvincible)
         {
             base.TakeDamage(damage, knockbackDirection);
+            if (enemyHealthBarFill != null)
+            {
+                enemyHealthBarFill.fillAmount = (float)health / maxHealth;
+               
+            }
         }
+        
     }
 
     private void SpawnDeathEffect()
