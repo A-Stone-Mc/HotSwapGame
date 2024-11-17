@@ -324,6 +324,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (Input.GetKey(KeyCode.E)) 
                 {
+                    DestroyParticles();
                     if (activeFireStream == null)
                     {
                         Vector3 firePosition = fireOriginPoint.position;
@@ -739,10 +740,21 @@ public class PlayerController : MonoBehaviour
                     enemyController.TakeDamage(1, Vector2.zero); // Deal 1 damage to enemy
                 }
             }
+        }
+    }
+
+
+        private void DestroyParticles()
+    {
+        
+        Collider2D[] hitObjects = Physics2D.OverlapCircleAll(fireOriginPoint.position, fireDamageRadius); 
+        
+        foreach (Collider2D obj in hitObjects)
+        {
             
-            else if (obj.CompareTag("Particle"))
+            if (obj.CompareTag("Particle"))
             {
-                Destroy(obj.gameObject); // Destroy the particle
+                Destroy(obj.gameObject); 
             }
         }
     }

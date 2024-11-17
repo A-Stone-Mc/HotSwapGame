@@ -6640,6 +6640,7 @@ RectTransform:
   - {fileID: 410327176}
   - {fileID: 1595798062}
   - {fileID: 937537859}
+  - {fileID: 124075272}
   - {fileID: 1005051254}
   - {fileID: 458982543}
   - {fileID: 820001613}
@@ -6648,7 +6649,6 @@ RectTransform:
   - {fileID: 739250544}
   - {fileID: 521943473}
   - {fileID: 2053415567}
-  - {fileID: 124075272}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -10790,9 +10790,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: dbb7c2c45bd5d5a48bf82eeb62940cf3, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 9df6d705101d72546b372a0cd73b9c21, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.174
+  m_Volume: 0.501
   m_Pitch: 1
   Loop: 1
   Mute: 0

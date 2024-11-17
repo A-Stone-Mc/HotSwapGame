@@ -305,8 +305,6 @@ public class SprayingEnemyController : EnemyController
        
         effect.transform.localScale = deathEffectScale; 
 
-        Debug.Log("Death effect instantiated and positioned over the enemy.");
-
         
         Destroy(effect, effectDuration);
     }

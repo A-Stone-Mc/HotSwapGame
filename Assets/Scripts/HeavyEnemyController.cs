@@ -22,6 +22,10 @@ public class HeavyEnemyController : EnemyController
     private AudioSource audioSource;  
     private bool isFacingRight = true; 
     private PlayerController playerController;
+    public GameObject deathEffectPrefab;
+    public float effectDuration = 1f;    
+    public Vector3 deathEffectScale = new Vector3(0.1f, 0.1f, 0.1f); 
+    public Vector3 deathEffectOffset = new Vector3(0, 0.5f, 0);
 
     private void Start()
     {
@@ -138,7 +142,20 @@ public class HeavyEnemyController : EnemyController
 
     public override void Die()
     {
+        SpawnDeathEffect();
         cdTimer.timeRemaining = newTimeRemaining;
         gameObject.SetActive(false);
+    }
+
+    private void SpawnDeathEffect()
+    {
+        
+        GameObject effect = Instantiate(deathEffectPrefab, transform.position + deathEffectOffset, Quaternion.identity);
+
+       
+        effect.transform.localScale = deathEffectScale; 
+
+        
+        Destroy(effect, effectDuration);
     }
 }

@@ -63,6 +63,11 @@ public class DialogueManager : MonoBehaviour
         {
             DisplayNextLine();
         }
+
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            EndTutorial();
+        }
     }
 
     private void DisplayNextLine()
@@ -143,7 +148,7 @@ public class DialogueManager : MonoBehaviour
     private void EndTutorial()
     {
         dialoguePanel.SetActive(false);
-        PlayerPrefs.SetInt("TutorialCompleted", 1); // Save tutorial completion status
+        PlayerPrefs.SetInt("TutorialCompleted", 1); 
         FindObjectOfType<CDTimer>().isCountdownActive = true;
     }
 }
