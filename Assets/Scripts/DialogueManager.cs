@@ -16,6 +16,7 @@ public class DialogueManager : MonoBehaviour
     public GameObject fuelCircleHighlight;
     
     public bool alwaysShowTutorial;
+    private PlayerController playerController;
 
     private string[] dialogues = {
         "Ah, you're awake! L.O.B.E., can you hear me?",
@@ -47,13 +48,16 @@ public class DialogueManager : MonoBehaviour
 
     private void Start()
     {
+        playerController = FindObjectOfType<PlayerController>();
         if (!alwaysShowTutorial && PlayerPrefs.GetInt("TutorialCompleted", 0) == 1)
         {
              FindObjectOfType<CDTimer>().isCountdownActive = true;
+             playerController.isMovementLocked = false;
             dialoguePanel.SetActive(false);
             return;
         }
         
+        playerController.isMovementLocked = true;
         ShowDialogue(); // Start tutorial if not completed
     }
 
@@ -128,7 +132,7 @@ public class DialogueManager : MonoBehaviour
         foreach (char letter in line)
         {
             dialogueText.text += letter;
-            yield return new WaitForSeconds(0.05f); // Typewriter speed
+            yield return new WaitForSeconds(0.03f); 
         }
         isTyping = false;
     }
@@ -148,7 +152,12 @@ public class DialogueManager : MonoBehaviour
     private void EndTutorial()
     {
         dialoguePanel.SetActive(false);
-        PlayerPrefs.SetInt("TutorialCompleted", 1); 
+        PlayerPrefs.SetInt("TutorialCompleted", 1);
+        if (playerController != null)
+        {
+            playerController.isMovementLocked = false;
+        }
         FindObjectOfType<CDTimer>().isCountdownActive = true;
+        
     }
 }

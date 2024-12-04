@@ -135,6 +135,8 @@ public class PlayerController : MonoBehaviour
     private bool hasGasAbility;
 
     private Animator animator;
+    public bool isMovementLocked { get; set; } = true;
+    
     private void Awake()
     {
         
@@ -148,6 +150,12 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        if (isMovementLocked) 
+        {
+            body.velocity = Vector2.zero; 
+            return;
+        }
+
         if (!isKnockedBack) 
         {
             horizontalInput = Input.GetAxis("Horizontal");
