@@ -4990,7 +4990,7 @@ MonoBehaviour:
   fuelStatusText: {fileID: 340038754}
   continueButton: {fileID: 929402014}
   retryButton: {fileID: 241262159}
-  levelNumberToLoad: 0
+  levelNumberToLoad: 4
 --- !u!4 &602207970
 Transform:
   m_ObjectHideFlags: 0
@@ -8421,9 +8421,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1850980643}
-        m_TargetAssemblyTypeName: PauseScreen, Assembly-CSharp
-        m_MethodName: GoToMainMenu
+      - m_Target: {fileID: 602207969}
+        m_TargetAssemblyTypeName: LevelCounter, Assembly-CSharp
+        m_MethodName: LoadNextLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
