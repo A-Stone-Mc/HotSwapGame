@@ -10792,7 +10792,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: dbb7c2c45bd5d5a48bf82eeb62940cf3, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.885
+  m_Volume: 0
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -11309,6 +11309,7 @@ MonoBehaviour:
   fireCooldown: 0.5
   fireOriginPoint: {fileID: 528924297}
   fireDamageRadius: 1.64
+  isMovementLocked: 0
 --- !u!61 &1451624599
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -135,7 +135,7 @@ public class PlayerController : MonoBehaviour
     private bool hasGasAbility;
 
     private Animator animator;
-    public bool isMovementLocked { get; set; } = true;
+    public bool isMovementLocked = true;
     
     private void Awake()
     {
