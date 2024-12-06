@@ -3665,6 +3665,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8993ef6d2c3baf74c8118bd83b1b6a55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  restartSound: {fileID: 0}
+  restartDelay: 1.5
 --- !u!1 &447416919
 GameObject:
   m_ObjectHideFlags: 0
@@ -10792,7 +10794,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: dbb7c2c45bd5d5a48bf82eeb62940cf3, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0
+  m_Volume: 0.81
   m_Pitch: 1
   Loop: 1
   Mute: 0
